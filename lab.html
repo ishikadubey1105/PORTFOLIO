@@ -1,0 +1,1876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JavaScript Lab | Ishika Dubey</title>
+<meta name="description" content="Portfolio of Ishika Dubey: CS undergraduate at SIT Nagpur working on machine learning and full-stack development.">
+<meta property="og:title" content="Ishika Dubey | ML & Full-Stack Developer">
+<meta property="og:description" content="CS (AI & ML) student at SIT Nagpur. Patent co-inventor, three research papers, and live projects in computer vision, agentic AI and web apps.">
+<meta name="theme-color" content="#d4507a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23d4507a'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-style='italic' font-size='36' fill='white' text-anchor='middle'%3EID%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Mono&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+
+<!-- LAB 1: EXTERNAL JavaScript (jQuery from a CDN) -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<style>
+:root{
+  --accent:#d4507a; --accent-soft:#f7d4de;
+  --bg:#fbf1ee; --surface:#fffaf8; --surface-2:#f6e4e4; --text:#3b1d2a; --muted:#8c6673;
+  --border:#ecd2d5; --paper:#ffe3ea; --ok:#3f8f5f; --err:#c0392b; --warn:#b7791f;
+  --serif:"Instrument Serif",Georgia,serif; --sans:"DM Sans",system-ui,sans-serif; --hand:"Caveat",cursive;
+}
+[data-theme="dark"]{
+  --bg:#1c1116; --surface:#25161d; --surface-2:#311f27; --text:#f8e6eb; --muted:#c29ba8;
+  --border:#45293a; --paper:#4a2636; --accent-soft:#4a2636;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.65;transition:background .3s,color .3s;overflow-x:hidden;
+  background-image:radial-gradient(color-mix(in srgb,var(--accent) 9%,transparent) 1px,transparent 1px);background-size:22px 22px}
+body.reduce-motion *{animation:none!important;transition:none!important}
+::selection{background:var(--accent);color:#fff}
+a{color:var(--accent);text-decoration:none}
+img{max-width:100%;display:block}
+code,.mono{font-family:"DM Mono",monospace}
+.container{width:min(1140px,100% - 32px);margin-inline:auto}
+section{padding:120px 0 80px}
+.section-head{margin-bottom:44px;border-bottom:1px solid var(--border);padding-bottom:18px}
+.section-head .kicker{font-family:"DM Mono",monospace;color:var(--accent);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase}
+.section-head h2{font-family:var(--serif);font-weight:400;font-size:clamp(2.4rem,5.5vw,3.8rem);line-height:1.05;margin-top:6px;letter-spacing:-.01em}
+.section-head p{color:var(--muted);max-width:620px;margin-top:8px}
+.grad{font-family:var(--serif);font-style:italic;color:var(--accent);font-weight:400}
+h3{font-weight:600;letter-spacing:-.01em}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px}
+.todo-item{border-style:dashed!important;opacity:.7}
+.pill{display:inline-block;font-size:.74rem;padding:2px 10px;border-radius:99px;border:1px solid var(--border);color:var(--muted);margin:3px 4px 0 0;background:var(--surface)}
+.pill.accent{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:99px;border:1px solid var(--text);background:transparent;color:var(--text);font:inherit;font-weight:500;cursor:pointer;transition:background .2s,color .2s,transform .2s}
+.btn:hover{background:var(--text);color:var(--bg)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:var(--text);border-color:var(--text);color:var(--bg)}
+.btn.ghost{border-color:transparent;text-decoration:underline;text-underline-offset:4px}
+.btn.ghost:hover{background:transparent;color:var(--accent)}
+.btn.small{padding:6px 14px;font-size:.84rem}
+input,select,textarea{font:inherit;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;width:100%;outline:none;transition:border .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+label{font-size:.82rem;font-weight:500;color:var(--muted);display:block;margin-bottom:4px}
+.grid{display:grid;gap:20px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.muted{color:var(--muted)}
+
+/* nav */
+.nav{position:fixed;inset:0 0 auto 0;z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.nav .inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+.brand{font-family:var(--serif);font-size:1.7rem;color:var(--text)}
+.brand span{color:var(--accent)}
+.nav ul{list-style:none;display:flex;gap:2px}
+.nav ul a{color:var(--muted);font-size:.86rem;padding:6px 10px;border-radius:99px}
+.nav ul a.active,.nav ul a:hover{color:var(--text);background:var(--accent-soft)}
+.nav-actions{display:flex;gap:8px}
+.icon-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-size:1rem}
+.burger{display:none}
+#scrollProgress{position:absolute;left:0;bottom:-1px;height:2px;width:0;background:var(--accent)}
+@media(max-width:1100px){
+  .burger{display:block}
+  .nav ul{position:absolute;top:64px;left:0;right:0;flex-direction:column;background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px;display:none}
+  .nav ul.open{display:flex}
+}
+
+/* ===== HERO (landing page) ===== */
+.hero{min-height:100vh;padding:96px 0 0;display:flex;flex-direction:column;position:relative}
+.hero-grid{flex:1;display:grid;grid-template-columns:1.35fr .9fr;grid-template-rows:auto 1fr auto;gap:10px 48px}
+.hero-meta{grid-column:1/-1;display:flex;justify-content:space-between;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:12px}
+.hero-text{align-self:center;padding:30px 0}
+.eyebrow{font-family:var(--hand);font-size:1.7rem;color:var(--accent);line-height:1}
+.hero h1{font-family:var(--serif);font-weight:400;font-size:clamp(4.6rem,13vw,10.5rem);line-height:.86;letter-spacing:-.035em;margin:14px 0 22px}
+.hero h1 .line{display:block}
+.hero h1 .italic{font-style:italic;color:var(--accent);padding-left:.5em;position:relative}
+.scribble{font-family:var(--hand);font-style:normal;font-size:clamp(1.2rem,2.2vw,1.8rem);color:var(--muted);letter-spacing:0;position:absolute;bottom:-.2em;margin-left:14px;transform:rotate(-6deg);white-space:nowrap}
+.typing{font-family:var(--serif);font-style:italic;font-size:clamp(1.4rem,2.6vw,2rem);min-height:1.5em}
+.caret{color:var(--accent);font-style:normal;animation:blink 1s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+.lead{font-size:1.05rem;color:var(--muted);max-width:500px;margin:14px 0 28px}
+.btn-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.hero-art{position:relative;align-self:center;min-height:500px}
+.polaroid{position:absolute;top:10px;right:6%;width:min(300px,72vw);background:#fff;padding:14px 14px 50px;box-shadow:0 18px 40px rgba(90,30,50,.16);transform:rotate(3deg);transition:transform .4s}
+.polaroid:hover{transform:rotate(0) scale(1.02)}
+.polaroid img{width:100%;aspect-ratio:4/5;object-fit:cover;background:#f3dfe4}
+.polaroid figcaption{position:absolute;left:0;right:0;bottom:12px;text-align:center;font-family:var(--hand);font-size:1.5rem;color:#5a3442}
+.tape{position:absolute;top:-14px;left:50%;width:110px;height:30px;transform:translateX(-50%) rotate(-4deg);background:color-mix(in srgb,var(--accent) 35%,#fff);opacity:.8}
+.visitor{position:absolute;left:-30px;bottom:-40px;width:min(280px,80vw);background:var(--paper);border:none;border-radius:2px;padding:18px 18px 16px;transform:rotate(-4deg);box-shadow:0 12px 26px rgba(90,30,50,.12);font-size:.86rem}
+.visitor .hand{font-family:var(--hand);font-size:1.45rem;line-height:1.1;margin-bottom:8px}
+.visitor .row{display:flex;gap:8px}
+.visitor input{background:rgba(255,255,255,.55);border:none;border-bottom:1.5px solid var(--accent);border-radius:0;padding:6px 4px}
+.visitor-info{display:grid;gap:2px;margin-top:10px;color:var(--muted);font-size:.76rem}
+.hero-index{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px 26px;padding:16px 0;border-top:1px solid var(--border);font-size:.9rem}
+.hero-index a{color:var(--text)}
+.hero-index a span{font-family:"DM Mono",monospace;font-size:.7rem;color:var(--accent);margin-right:6px}
+.hero-index a:hover{color:var(--accent)}
+.marquee{overflow:hidden;background:var(--accent);color:#fff;padding:12px 0;transform:rotate(-1deg);margin:18px -10px 0}
+.track-m{display:flex;gap:26px;width:max-content;animation:marquee 38s linear infinite;font-family:var(--serif);font-style:italic;font-size:1.35rem;white-space:nowrap}
+.track-m i{font-style:normal;opacity:.8}
+@keyframes marquee{to{transform:translateX(-50%)}}
+@media(max-width:860px){
+  .hero-grid{grid-template-columns:1fr}
+  .hero-art{min-height:auto;display:flex;flex-direction:column;align-items:center;gap:30px;order:3;padding-bottom:20px}
+  .polaroid,.visitor{position:relative;top:auto;right:auto;left:auto;bottom:auto}
+  .hero-index{order:4}
+  .scribble{display:none}
+}
+
+/* about */
+.facts{list-style:none;display:grid;gap:10px;margin-top:16px}
+.facts li{display:flex;gap:12px;border-bottom:1px dashed var(--border);padding-bottom:8px}
+.facts b{min-width:100px;color:var(--muted);font-weight:500;font-size:.88rem}
+
+/* timeline */
+.timeline{position:relative;padding-left:30px}
+.timeline::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;border-left:1.5px dashed var(--accent)}
+.t-item{position:relative;margin-bottom:20px}
+.t-item::before{content:"✿";position:absolute;left:-31px;top:22px;color:var(--accent);font-size:1rem;background:var(--bg);line-height:1}
+.t-year{font-family:"DM Mono",monospace;font-size:.75rem;color:var(--accent);letter-spacing:.08em}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--border)}
+th{color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;font-weight:500}
+th.sortable{cursor:pointer;user-select:none}
+th.sortable:hover{color:var(--accent)}
+.table-wrap{overflow-x:auto}
+.bars{display:flex;align-items:flex-end;gap:14px;height:170px;margin-top:20px}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.bar div{width:100%;max-width:50px;border-radius:99px 99px 6px 6px;background:var(--accent);height:0;transition:height 1.2s ease}
+.bar span{font-size:.74rem;color:var(--muted)}
+
+/* skills */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.filters button{border:1px solid var(--border);background:var(--surface);color:var(--muted);padding:6px 16px;border-radius:99px;font:inherit;font-size:.88rem;cursor:pointer}
+.filters button.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+.skill .top{display:flex;justify-content:space-between;font-size:.92rem}
+.track{height:6px;border-radius:9px;background:var(--surface-2);overflow:hidden;margin-top:8px}
+.fill{height:100%;width:0;border-radius:9px;background:var(--accent);transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
+
+/* projects */
+.project{display:flex;flex-direction:column;padding:0;overflow:hidden;transition:transform .3s}
+.project:hover{transform:translateY(-4px)}
+.project .cover{height:190px;background:var(--surface-2);overflow:hidden;border-bottom:1px solid var(--border)}
+.project .cover img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.project:hover .cover img{transform:scale(1.04)}
+.project .body{padding:22px;display:flex;flex-direction:column;gap:10px;flex:1}
+.project h3{font-family:var(--serif);font-weight:400;font-size:1.6rem;line-height:1.15}
+.project ul{padding-left:18px;color:var(--muted);font-size:.88rem}
+.project .links{display:flex;gap:10px;margin-top:auto;flex-wrap:wrap}
+
+.more-list{border-top:1px solid var(--border)}
+.more-item{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:16px 4px;border-bottom:1px solid var(--border);color:var(--text);transition:padding .25s,background .25s}
+.more-item:hover{padding-left:14px;background:var(--accent-soft)}
+.more-item p{font-size:.88rem;margin-top:2px}
+.more-item .mono{font-size:.72rem;white-space:nowrap}
+@media(max-width:700px){.more-item{flex-direction:column;align-items:flex-start;gap:6px}}
+/* stats & achievements */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin-bottom:30px;border:1px solid var(--border);border-radius:16px;background:var(--surface)}
+.stats .card{border:none;border-right:1px solid var(--border);border-radius:0;background:transparent}
+.stats .card:last-child{border-right:none}
+.stat{text-align:center}
+.stat .num{font-family:var(--serif);font-size:3.4rem;line-height:1}
+.ach{display:flex;gap:14px;align-items:flex-start}
+.ach .ico{font-size:1.3rem;width:44px;height:44px;flex-shrink:0;display:grid;place-items:center;border-radius:50%;background:var(--accent-soft)}
+
+/* certificates & gallery */
+.cert{padding:0;overflow:hidden;cursor:pointer}
+.cert img{width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--surface-2)}
+.cert .body{padding:14px 18px}
+.gallery{columns:3 240px;column-gap:18px}
+.gallery figure{break-inside:avoid;margin-bottom:18px;background:#fff;padding:10px 10px 38px;box-shadow:0 8px 22px rgba(90,30,50,.1);position:relative;cursor:zoom-in;transition:transform .3s}
+.gallery figure:nth-child(odd){transform:rotate(-1.2deg)}
+.gallery figure:nth-child(even){transform:rotate(1.2deg)}
+.gallery figure:hover{transform:rotate(0) scale(1.02)}
+.gallery figcaption{position:absolute;left:0;right:0;bottom:8px;text-align:center;font-family:var(--hand);font-size:1.25rem;color:#5a3442}
+.lightbox{position:fixed;inset:0;background:rgba(40,12,24,.92);z-index:90;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:20px}
+.lightbox.open{display:flex}
+.lightbox img{max-height:78vh;max-width:92vw}
+.lightbox p{color:#fff;font-family:var(--hand);font-size:1.4rem}
+.lb-btn{position:absolute;top:50%;background:rgba(255,255,255,.12);color:#fff;border:none;width:46px;height:46px;border-radius:50%;font-size:1.4rem;cursor:pointer}
+.lb-prev{left:16px}.lb-next{right:16px}.lb-close{top:20px;right:20px}
+
+/* career */
+.countdown{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.countdown div{border:1px solid var(--border);border-radius:12px;padding:10px 6px;text-align:center;min-width:72px}
+.countdown b{display:block;font-family:var(--serif);font-weight:400;font-size:2.2rem;line-height:1.1}
+.countdown span{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+
+/* lab */
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:18px}
+.tabs button{flex-shrink:0;border:1px solid var(--border);background:transparent;color:var(--muted);padding:7px 15px;border-radius:99px;font:inherit;font-size:.86rem;cursor:pointer}
+.tabs button.on{color:#fff;background:var(--accent);border-color:var(--accent)}
+.tab-panel{display:none}
+.tab-panel.on{display:block;animation:fade .35s}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}}
+.form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:12px}
+.out{margin-top:16px;padding:16px;border-radius:12px;background:var(--surface-2);font-size:.9rem}
+.out:empty{display:none}
+.lab-tag{font-family:"DM Mono",monospace;font-size:.72rem;color:var(--accent);margin-bottom:6px;letter-spacing:.04em}
+.ok{color:var(--ok)}.err{color:var(--err)}.warn{color:var(--warn)}
+.todo-list{list-style:none;margin-top:14px}
+.todo-list li{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px dashed var(--border);transition:opacity .25s,transform .25s}
+.todo-list li.done .todo-text{text-decoration:line-through;color:var(--muted)}
+.todo-list li.removing{opacity:0;transform:translateX(30px)}
+.todo-list .todo-text{flex:1}
+.todo-list input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
+.todo-list input[type=text]{flex:1;padding:5px 8px}
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.product{padding:12px;border:1px solid var(--border);border-radius:12px;font-size:.86rem}
+.cart-line{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dashed var(--border);font-size:.9rem}
+.qty button{width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer}
+
+/* contact */
+.field{margin-bottom:12px}
+.field small{display:block;min-height:1.2em;font-size:.76rem;margin-top:3px}
+.field.valid input,.field.valid textarea,.field.valid select{border-color:var(--ok)}
+.field.invalid input,.field.invalid textarea,.field.invalid select{border-color:var(--err)}
+.socials{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+
+/* drawer, toast, footer */
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(340px,100%);background:var(--surface);border-left:1px solid var(--border);z-index:80;padding:24px;transform:translateX(100%);transition:transform .3s;overflow-y:auto}
+.drawer.open{transform:none}
+.drawer h3{font-family:var(--serif);font-weight:400;font-size:1.8rem;margin-bottom:18px}
+.drawer .group{margin-bottom:22px}
+.swatches{display:flex;gap:10px;flex-wrap:wrap}
+.swatches button{width:32px;height:32px;border-radius:50%;border:3px solid var(--surface);outline:1px solid var(--border);cursor:pointer}
+.swatches button.on{outline:2px solid var(--text)}
+.seg{display:flex;gap:6px}
+.seg button{flex:1;padding:8px;border-radius:99px;border:1px solid var(--border);background:transparent;color:var(--text);font:inherit;font-size:.85rem;cursor:pointer}
+.seg button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,120px);background:var(--text);color:var(--bg);padding:12px 22px;border-radius:99px;z-index:100;transition:transform .35s;max-width:90vw}
+.toast.show{transform:translate(-50%,0)}
+footer{padding:40px 0;border-top:1px solid var(--border);color:var(--muted);font-size:.86rem}
+footer .container{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .8s,transform .8s}
+.reveal.in{opacity:1;transform:none}
+.gallery figure.reveal.in:nth-child(odd){transform:rotate(-1.2deg)}
+.gallery figure.reveal.in:nth-child(even){transform:rotate(1.2deg)}
+</style>
+</head>
+
+<!-- LAB 1: INLINE JavaScript (onload attribute) -->
+<body onload="console.info('%cPage fully loaded (inline onload handler)', 'color:#00bfa6')">
+<noscript><p style="padding:40px;text-align:center">This portfolio is built entirely with JavaScript. Please enable JavaScript to view it.</p></noscript>
+
+<!-- The whole page is generated by JavaScript into this one element -->
+<div id="app"></div>
+
+<!-- LAB 1: INTERNAL JavaScript (this script block) -->
+<script>
+"use strict";
+
+/* =====================================================================
+   0. DATA: edit this part to update the website.
+   Any value left as null shows as "to be updated" on the page and is
+   listed in the browser console with console.warn().
+   ===================================================================== */
+
+// LAB 2: const for values that never get reassigned
+const PROFILE = {
+  name: "Ishika Dubey",
+  roles: ["Machine Learning Developer", "Full-Stack Web Developer", "Research-minded Builder", "Hackathon Team Lead"],
+  tagline: "I build machine-learning systems that are careful about the mistakes they make, and the web apps that put them in people's hands.",
+  photo: "images/profile.jpg",              // add your photo here
+  location: "Nagpur, Maharashtra, India",
+  university: "Symbiosis Institute of Technology, Nagpur",
+  degree: "B.Tech, Computer Science (AI & ML specialisation)",
+  currentSem: 5,
+  cgpa: 7.5,
+  about: [
+    "I'm a third-year Computer Science (AI & ML) student at Symbiosis Institute of Technology, Nagpur, and I'm also doing a Minor in AI from IIT Ropar. I learn best by building things: a skin-lesion triage model that runs entirely inside a web browser, a CO₂-forecasting system that turned into a published patent application, and a case-handoff platform put together in a 24-hour hackathon.",
+    "I like problems where the model is only half the work. It has to be fast enough for an ordinary laptop, honest about what it can't do, and packaged in something a real person can use. That's why my projects usually end up as full-stack apps rather than notebooks."
+  ],
+  contact: {
+    email: "ishikadubey2020@gmail.com",
+    collegeEmail: "ishika.dubey.batch2024@sitnagpur.siu.edu.in",
+    phone: "+91 87677 17941",
+    githubUser: "ishikadubey1105",
+    linkedin: "https://www.linkedin.com/in/ishika-dubey/"
+  },
+  resumePdf: null,                            // e.g. "resume.pdf"; if null, a CV is generated from this data
+  countdown: { label: "Summer internship season 2027", date: "2027-05-01T09:00:00" }
+};
+
+const EDUCATION = [
+  { year: "2024 – 2028", title: PROFILE.degree, place: PROFILE.university, detail: `Currently in Semester ${PROFILE.currentSem}. Coursework: machine learning, deep learning, neural networks, data structures & algorithms, DBMS, cloud computing, operating systems.`, score: PROFILE.cgpa, scoreLabel: "CGPA" },
+  { year: "2025 – 2026", title: "Minor in Artificial Intelligence", place: "Indian Institute of Technology (IIT) Ropar", detail: "Advanced AI, research methodology and real-world applications. My book-recommendation engine was built for this programme.", score: null, scoreLabel: null }
+];
+
+const COURSEWORK = ["Machine Learning", "Deep Learning", "Neural Networks", "Data Structures & Algorithms", "Database Management", "Cloud Computing", "Operating Systems", "Statistics & Probability", "Programming in C"];
+
+// Skill groups, each tied to the projects where the skills were actually used
+const SKILLS = [
+  { cat: "lang", title: "Languages", items: ["Python", "JavaScript", "TypeScript", "C", "Java", "SQL", "HTML / CSS"], usedIn: "Every project; Python is my main language" },
+  { cat: "ml", title: "ML & Deep Learning", items: ["PyTorch", "TensorFlow / Keras", "scikit-learn", "Hugging Face", "OpenCV", "LLM agents & function calling", "Transfer learning"], usedIn: "DERMA-AI, AttendX, Smart Health Tracker, digit recognition" },
+  { cat: "ml", title: "Data & Analysis", items: ["Pandas", "NumPy", "Matplotlib / Seaborn", "EDA", "Feature engineering", "Time-series forecasting"], usedIn: "CO₂ emission forecaster (patent), Atmosphera, HealthPulse" },
+  { cat: "web", title: "Web & Deployment", items: ["Next.js / React", "FastAPI", "jQuery", "Prisma", "ONNX Runtime Web", "REST APIs"], usedIn: "Thread, Atmosphera, AttendX, DERMA-AI web app, this site" },
+  { cat: "cloud", title: "Cloud & DevOps", items: ["Google Cloud (Cloud Build, Cloud Run, GKE)", "Azure ML Studio", "Docker", "Red Hat Linux (RH124)", "Git / GitHub", "Postman"], usedIn: "SmartSpend, Thread and Atmosphera on Vercel, GCP and Azure coursework" }
+];
+
+const PROJECTS = [
+  {
+    title: "DERMA-AI: DoRT-Net Skin-Lesion Triage",
+    img: "images/project-derma.png",
+    type: "Research · Computer Vision",
+    desc: "Sorts a photo of a skin lesion into low, moderate or high urgency instead of claiming a diagnosis. DoRT-Net is my single, efficient model: EfficientNet-B0 plus metadata conditioning, prototype attention, a cost-sensitive loss and phone-photo simulation, all at 4.38M parameters.",
+    points: [
+      "Melanoma ROC-AUC on smartphone photos (PAD-UFES-20): 0.62 → 0.84",
+      "Melanomas wrongly marked 'low urgency' on HAM10000: 55 → 23",
+      "Runs fully in the browser via ONNX (fp16, 8.8 MB, ~137 ms per image)"
+    ],
+    tags: ["PyTorch", "EfficientNet", "ONNX Runtime Web", "JavaScript"],
+    github: null,
+    live: null
+  },
+  {
+    title: "Thread: No Complaint Left Hanging",
+    img: "images/project-thread.jpg",
+    type: "Hackathon · Team Lead",
+    desc: "Built with my team in a 24-hour hackathon (Problem Statement 3: digital handoff). When a customer complaint changes hands, Thread makes a bad handover impossible: a case can only be forwarded once it passes a completeness gate, and the receiver has to confirm they understood it before they own it.",
+    points: [
+      "8-point completeness gate, re-checked on the server so the browser can't skip it",
+      "Hash-chained, append-only audit trail of every step",
+      "Receiver acknowledges a hashed snapshot of the case"
+    ],
+    tags: ["Next.js", "TypeScript", "Prisma", "Vercel"],
+    github: "https://github.com/ishikadubey1105/V4CATALYST",
+    live: "https://v4-catalyst.vercel.app"
+  },
+  {
+    title: "CO₂ Emission Trend Analyser & Forecaster",
+    img: null,
+    type: "Patent published · Research paper",
+    desc: "Analyses India's carbon-dioxide emissions with data analytics and forecasts future trends with machine-learning models. The system became Indian patent application 202521127286 A, published in the Patent Office Journal on 2 January 2026, with me as a co-inventor.",
+    points: [
+      "Patent: 'System and Method for CO₂ Emission Forecasting Using ML Models'",
+      "Companion paper: 'CO₂ Emission in India: Trend Analyzer Using Data Analytics and ML'",
+      "Three students working with Prof. Nisha Gongal"
+    ],
+    tags: ["Python", "Pandas", "Forecasting", "Data analytics"],
+    github: null,
+    live: null
+  },
+  {
+    title: "Atmosphera: Mood-Based Book Discovery",
+    img: "images/project-atmosphera.jpg",
+    type: "IIT Ropar capstone · Recommender systems",
+    desc: "Standard collaborative filtering says 'people like you also read X'. Atmosphera adds a second axis, mood, so you can ask for 'something slow and warm' instead of 'something like my last thriller'. The two signals are combined, because mood alone gives repetitive results.",
+    points: [
+      "Capstone for the IIT Ropar Minor in AI, built over 55 commits",
+      "Test suite, CI and an evaluation notebook, not just a demo",
+      "Deployed on Vercel with Google sign-in"
+    ],
+    tags: ["TypeScript", "Collaborative filtering", "CI", "Vercel"],
+    github: "https://github.com/ishikadubey1105/atmosphera-book-recommender",
+    live: "https://atmosphera-app.vercel.app"
+  },
+  {
+    title: "AttendX: Agentic Attendance Assistant",
+    img: "images/project-attendx.jpg",
+    type: "Agentic AI · Full-stack",
+    desc: "Colleges usually spot an attendance shortage in November, when it's too late. AttendX forecasts where each student will land by September, separates 'needs 12 more classes' from 'can no longer recover', and drafts the parent letter. Six specialised agents sit behind a supervisor that picks tools with LLM function calling.",
+    points: [
+      "Supervisor + 6 agents, 11 tools; every answer traceable to one agent",
+      "Falls back to a keyword planner when no API key is set, and never invents a number",
+      "31 passing tests"
+    ],
+    tags: ["Python", "FastAPI", "React", "Groq · Llama 3.3"],
+    github: "https://github.com/ishikadubey1105/AttendX",
+    live: null
+  },
+  {
+    title: "SmartSpend: Cloud-Native Expense Manager",
+    img: null,
+    type: "Cloud · Research paper",
+    desc: "A personal expense manager deliberately split into services (FastAPI backend, web client and mobile client) to learn service boundaries, orchestration and CI. It became my research paper on a FinOps-driven expense manager with cost visibility and chargeback models.",
+    points: ["FastAPI + MongoDB Atlas backend, web and mobile clients", "Docker Compose orchestration and a GitHub Actions pipeline"],
+    tags: ["FastAPI", "Docker", "GitHub Actions", "MongoDB"],
+    github: "https://github.com/ishikadubey1105/SmartSpend-Cloud-Native-Expense-Manager",
+    live: null
+  }
+];
+
+// Smaller projects, shown as a compact list under the main cards
+const MORE_PROJECTS = [
+  { title: "Cattle & Buffalo Type Classification (ATC-AI)", text: "Web app for scoring animal-type assessments under the Rashtriya Gokul Mission, with a computer-vision measurement pipeline in progress.", tags: "TypeScript · CV", url: "https://github.com/ishikadubey1105/cattle-buffalo-classification" },
+  { title: "Smart Health Tracker Insights", text: "Predicts sleep quality from wearable data. A deep network scores 87.6% but logistic regression scores 87.3%, and the write-up asks whether the complexity is worth it.", tags: "Python · ML", url: "https://github.com/ishikadubey1105/Smart-Health-Tracker-Insights" },
+  { title: "HealthPulse Dashboard", text: "Hospital analytics dashboard with a heart-disease risk model (~84% on UCI data) behind the UI.", tags: "TypeScript · scikit-learn", url: "https://github.com/ishikadubey1105/Healthcare-dashboard" },
+  { title: "EcoTrack", text: "Gamified carbon-footprint tracker with a weekly carbon budget and what-if simulations.", tags: "TypeScript", url: "https://github.com/ishikadubey1105/ECOTRACK-APP" },
+  { title: "SIT FAQ Chatbot", text: "Institute-query chatbot combining TF-IDF retrieval with a Naive Bayes intent classifier and voice input.", tags: "Python · NLP", url: "https://github.com/ishikadubey1105/sit-faq-chatbot" },
+  { title: "Handwritten Digit Recognition", text: "CNN trained on MNIST with a drawing pad for live predictions.", tags: "Python · CNN", url: "https://github.com/ishikadubey1105/Handwritten-Digit-Recognition" },
+  { title: "Agentic AI coursework", text: "Seven progressively harder LLM-agent builds, ending in a multi-agent system.", tags: "Python · LLM agents", url: "https://github.com/ishikadubey1105/AI-agents-Course" },
+  { title: "Neural Networks in C", text: "Twenty C programs implementing neural-network fundamentals from scratch.", tags: "C", url: "https://github.com/ishikadubey1105/Neural-Networks" }
+];
+
+// Virtual job simulations and internships
+const EXPERIENCE = [
+  { when: "Mar 2026", role: "Quantitative Research Job Simulation", org: "JPMorgan Chase & Co. (Forage)", text: "Analysed price data, priced a commodity storage contract, and built credit-risk and FICO-bucketing models." },
+  { when: "Mar 2026", role: "Technology Job Simulation", org: "Deloitte (Forage)", text: "Coding and development tasks." },
+  { when: "Jul 2025", role: "Software Engineering Job Simulation", org: "Accenture (Forage)", text: "Architecture, security, programming, testing and agile tasks." },
+  { when: "Jun 2025", role: "Campus Ambassador Intern", org: "VNIT Nagpur", text: "Part of VNIT Nagpur's Campus Ambassador Internship programme." },
+  { when: "Jun 2025", role: "Data Analytics Job Simulation", org: "Deloitte (Forage)", text: "Data analysis and forensic-technology tasks." }
+];
+
+const ACHIEVEMENTS = [
+  { icon: "📜", title: "Published patent application", text: "Co-inventor on Indian patent application 202521127286 A for a system that forecasts CO₂ emissions with machine learning. Published in the Patent Office Journal, 2 Jan 2026.", year: "2026" },
+  { icon: "🚀", title: "NASA International Space Apps Challenge", text: "Took part in the 2025 NASA International Space Apps Challenge and received the 'Galactic Problem Solver' certificate.", year: "2025" },
+  { icon: "📄", title: "Three research papers", text: "DoRT-Net (safety-aware skin-lesion triage), CO₂ emission trend analysis in India, and a FinOps-driven cloud-native expense manager.", year: "2025–26" },
+  { icon: "🇮🇳", title: "India AI Impact Buildathon", text: "Took part in HCL GUVI's nationwide AI buildathon at the India AI Impact Summit 2026, alongside 40,000+ participants.", year: "2026" },
+  { icon: "🏁", title: "Hackathon team lead", text: "Led my team through a 24-hour hackathon, taking Thread from problem statement to a live, deployed app.", year: "2026" },
+  { icon: "🎓", title: "Minor in AI at IIT Ropar", text: "Studying advanced AI and research methodology at IIT Ropar alongside my B.Tech.", year: "2026" }
+];
+
+// cat: sim = job simulation, ai = AI / ML, cloud = cloud & dev, prog = programming, event = competitions & events
+const CERTIFICATES = [
+  { title: "NASA Space Apps Challenge: Galactic Problem Solver", issuer: "NASA", year: "2025", img: "images/certs/nasa-space-apps.jpg", cat: "event" },
+  { title: "India AI Impact Buildathon", issuer: "HCL GUVI", year: "2026", img: "images/certs/india-ai-buildathon.jpg", cat: "event" },
+  { title: "Quantitative Research Job Simulation", issuer: "JPMorgan Chase & Co. · Forage", year: "2026", img: "images/certs/jpmorgan-quant.jpg", cat: "sim" },
+  { title: "Mastering Agentic AI: Prompt to Protocols to Production", issuer: "Udemy · 38 hours", year: "2026", img: "images/certs/udemy-agentic-ai.jpg", cat: "ai" },
+  { title: "Introduction to Machine Learning", issuer: "Duke University · Coursera", year: "2025", img: "images/certs/duke-ml.jpg", cat: "ai" },
+  { title: "Red Hat System Administration I (RH124)", issuer: "Red Hat", year: "2026", img: "images/certs/redhat-rh124.jpg", cat: "cloud" },
+  { title: "Software Engineering Job Simulation", issuer: "Accenture · Forage", year: "2025", img: "images/certs/accenture-swe.jpg", cat: "sim" },
+  { title: "Building Production-Ready Apps with LLMs", issuer: "Coursera", year: "2025", img: "images/certs/coursera-llm-apps.jpg", cat: "ai" },
+  { title: "Data Analytics Job Simulation", issuer: "Deloitte · Forage", year: "2025", img: "images/certs/deloitte-data.jpg", cat: "sim" },
+  { title: "Technology Job Simulation", issuer: "Deloitte · Forage", year: "2026", img: "images/certs/deloitte-tech.jpg", cat: "sim" },
+  { title: "IBM Granite Models for Software Development", issuer: "IBM SkillsBuild", year: "2026", img: "images/cert-ibm-granite.png", cat: "ai" },
+  { title: "Build a Computer Vision App with Azure Cognitive Services", issuer: "Microsoft · Coursera", year: "2026", img: "images/certs/azure-cv.jpg", cat: "cloud" },
+  { title: "Machine Learning Pipelines with Azure ML Studio", issuer: "Coursera", year: "2026", img: "images/certs/azure-ml.jpg", cat: "cloud" },
+  { title: "Introduction to Data Analytics on Google Cloud", issuer: "Google Cloud · Coursera", year: "2025", img: "images/certs/gcp-data-analytics.jpg", cat: "cloud" },
+  { title: "Azure: Create a VM and Deploy a Web Server", issuer: "Coursera", year: "2025", img: "images/certs/azure-vm.jpg", cat: "cloud" },
+  { title: "Generative AI for All", issuer: "Infosys Springboard", year: "2025", img: "images/certs/infosys-genai.jpg", cat: "ai" },
+  { title: "Generative AI Mastermind", issuer: "Outskill", year: "2025", img: "images/certs/outskill-genai.jpg", cat: "ai" },
+  { title: "Data Structures & Algorithms using Python, Part 1", issuer: "Infosys Springboard", year: "2025", img: "images/certs/infosys-dsa.jpg", cat: "prog" },
+  { title: "Python (Basic)", issuer: "HackerRank", year: "2025", img: "images/certs/hackerrank-python.jpg", cat: "prog" },
+  { title: "Python for Data Visualization: Matplotlib & Seaborn", issuer: "Coursera", year: "2025", img: "images/certs/coursera-dataviz.jpg", cat: "prog" },
+  { title: "API Testing a Web Application via Postman", issuer: "Coursera", year: "2025", img: "images/certs/postman-api.jpg", cat: "prog" },
+  { title: "Introduction to Python Programming", issuer: "Red Hat", year: "2025", img: "images/certs/redhat-python.jpg", cat: "prog" },
+  { title: "Velocity Design Challenge", issuer: "Team Velocity, VNIT Nagpur", year: "2025", img: "images/certs/vnit-velocity.jpg", cat: "event" },
+  { title: "Campus Ambassador Internship", issuer: "VNIT Nagpur", year: "2025", img: "images/certs/vnit-ambassador.jpg", cat: "event" },
+  { title: "Find The Bug 3.0", issuer: "IIT Dharwad · Unstop", year: "2025", img: "images/certs/iit-dharwad-findthebug.jpg", cat: "event" },
+  { title: "Daily Quiz: Rank 100", issuer: "Unstop", year: "2025", img: "images/certs/unstop-quiz-100.jpg", cat: "event" },
+  { title: "CodeClash: The August Arena", issuer: "Lets Code Community", year: "2025", img: "images/certs/codeclash.jpg", cat: "event" },
+  { title: "Weekly Coding Challenge", issuer: "Unstop", year: "2025", img: "images/certs/unstop-weekly.jpg", cat: "event" }
+];
+
+const ACTIVITIES = [
+  { icon: "🛰", title: "NASA Space Apps Challenge 2025", text: "Worked on a NASA challenge problem over the 4–5 October 2025 hackathon weekend." },
+  { icon: "👥", title: "Hackathon team leader: Thread", text: "Split the work across the team, owned the architecture and gave the final demo of a live, deployed app." },
+  { icon: "📣", title: "Campus Ambassador, VNIT Nagpur", text: "Took part in VNIT Nagpur's Campus Ambassador Internship programme." },
+  { icon: "🎨", title: "Velocity Design Challenge, VNIT", text: "Took part in Team Velocity's design challenge in January 2025." },
+  { icon: "🐞", title: "Coding contests", text: "Find The Bug 3.0 (IIT Dharwad), CodeClash August Arena, Unstop weekly challenges, and 100th rank in an Unstop daily quiz." },
+  { icon: "🔬", title: "Research under faculty guidance", text: "Ran experiments and wrote papers with faculty guides for DERMA-AI and the CO₂ emission project." }
+];
+
+const INTERESTS = ["Computer vision", "Machine learning for healthcare", "Generative AI & LLMs", "Recommendation systems", "Cloud-native ML deployment"];
+
+const GALLERY = [
+  { src: "images/certs/nasa-space-apps.jpg", caption: "NASA Space Apps Challenge 2025" },
+  { src: "images/project-thread.jpg", caption: "Thread, our hackathon build" },
+  { src: "images/project-derma.png", caption: "DERMA-AI system architecture" },
+  { src: "images/certs/india-ai-buildathon.jpg", caption: "India AI Impact Buildathon" },
+  { src: "images/project-atmosphera.jpg", caption: "Atmosphera, my IIT Ropar capstone" },
+  { src: "images/project-relay.png", caption: "Early handoff dashboard sketch" }
+];
+
+// Offline copy of repository data, used if the GitHub API cannot be reached (LAB 10)
+const LOCAL_REPOS = [
+  { name: "V4CATALYST", description: "Thread: complaint handoff platform (hackathon)", language: "TypeScript", stargazers_count: 0, updated_at: "2026-10-13T00:00:00Z", html_url: "https://github.com/ishikadubey1105/V4CATALYST" },
+  { name: "AttendX", description: "Agentic attendance assistant with a supervisor and six agents", language: "Python", stargazers_count: 0, updated_at: "2026-10-02T00:00:00Z", html_url: "https://github.com/ishikadubey1105/AttendX" },
+  { name: "atmosphera-book-recommender", description: "Mood-based book discovery, IIT Ropar capstone", language: "TypeScript", stargazers_count: 0, updated_at: "2026-09-10T00:00:00Z", html_url: "https://github.com/ishikadubey1105/atmosphera-book-recommender" },
+  { name: "SmartSpend-Cloud-Native-Expense-Manager", description: "Multi-service expense manager with Docker and CI", language: "Python", stargazers_count: 0, updated_at: "2026-09-10T00:00:00Z", html_url: "https://github.com/ishikadubey1105/SmartSpend-Cloud-Native-Expense-Manager" }
+];
+
+const NAV = [["lab", "JS Lab"]];
+const ACCENTS = ["#d4507a", "#e6799a", "#b03a68", "#c0708a", "#e0715c", "#8e4b6b"];
+
+
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+
+// LAB 6: regex replace for HTML-escaping user input
+const escapeHTML = (str = "") => String(str).replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch]);
+const initials = PROFILE.name.split(" ").map(w => w[0]).join("");
+const githubURL = `https://github.com/${PROFILE.contact.githubUser}`;
+const rupee = n => "₹" + Number(n).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const TBD = `<span class="muted"><i>to be updated</i></span>`;
+
+// LAB 9: wrappers around localStorage / sessionStorage (they can throw in private mode)
+function makeStore(storage) {
+  return {
+    get(key, fallback) {
+      try { const v = storage.getItem(key); return v === null ? fallback : JSON.parse(v); }
+      catch (e) { return fallback; }
+    },
+    set(key, value) {
+      try { storage.setItem(key, JSON.stringify(value)); }
+      catch (e) { console.warn("Storage not available:", e.message); }
+    },
+    remove(key) { try { storage.removeItem(key); } catch (e) { /* ignore */ } }
+  };
+}
+const Local = makeStore(window.localStorage);
+const Session = makeStore(window.sessionStorage);
+
+// Placeholder image generated as SVG, used when an image file is missing
+function placeholderSVG(label, round) {
+  const hue = [...label].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) % 24 + 330;
+  const text = escapeHTML(label.length > 34 ? label.slice(0, 32) + "…" : label);
+  const size = round ? 72 : 30;
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'>
+    <defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='hsl(${hue},70%,78%)'/><stop offset='1' stop-color='hsl(${hue + 12},55%,52%)'/></linearGradient></defs>
+    <rect width='800' height='600' fill='url(#g)'/>
+    <text x='400' y='${round ? 330 : 300}' font-family='Segoe UI,Arial,sans-serif' font-weight='700' font-size='${size}' fill='white' text-anchor='middle'>${text}</text>
+    ${round ? "" : "<text x='400' y='350' font-family='Segoe UI,Arial,sans-serif' font-size='20' fill='rgba(255,255,255,.75)' text-anchor='middle'>add the image to the images/ folder</text>"}
+  </svg>`;
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+}
+// Called from inline onerror="" attributes on <img> tags
+function imgFallback(img) {
+  img.onerror = null;
+  if (img.dataset.kind === "avatar") {
+    const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 500'><rect width='400' height='500' fill='#f7d4de'/>
+      <circle cx='200' cy='250' r='150' fill='none' stroke='#d4507a' stroke-width='1.5' stroke-dasharray='4 8'/>
+      <text x='200' y='290' font-family='Georgia,serif' font-style='italic' font-size='130' fill='#d4507a' text-anchor='middle'>I.D.</text></svg>`;
+    img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+    return;
+  }
+  img.src = placeholderSVG(img.dataset.label || "Image", img.dataset.kind === "avatar");
+}
+
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(showToast.timer);                    // functions are objects, so they can hold properties
+  showToast.timer = setTimeout(() => t.classList.remove("show"), 2800);
+}
+
+// Called by the inline onclick in the hero
+function sayHello() {
+  const name = Local.get("pf_visitor", "");
+  showToast(name ? `Hi ${name}! Thanks for stopping by 😊` : "Hi! Tell me your name in the box below 👇");
+  console.log("sayHello() was called from an inline onclick attribute");
+}
+
+
+/* =====================================================================
+   2. RENDER FUNCTIONS: each returns an HTML string (template literals)
+   ===================================================================== */
+
+function renderNav() {
+  return `
+  <header class="nav" id="topnav">
+    <div class="container inner">
+      <a href="index.html" class="brand">${initials}<span>.</span></a>
+      <nav><ul id="navLinks">${NAV.map(([id, label]) => `<li><a href="#${id}" data-target="${id}">${label}</a></li>`).join("")}</ul></nav>
+      <div class="nav-actions">
+        <button class="icon-btn" id="themeBtn" title="Toggle light / dark">◐</button>
+        <button class="icon-btn" id="settingsBtn" title="Preferences">⚙</button>
+        <button class="icon-btn burger" id="burger" title="Menu">☰</button>
+      </div>
+    </div>
+    <div id="scrollProgress"></div>
+  </header>`;
+}
+
+function renderHero() {
+  const { name, tagline, photo, location, currentSem } = PROFILE;   // LAB 2: object destructuring
+  const [firstName, ...rest] = name.split(" ");                     // LAB 2: array destructuring + rest
+  const city = location.split(",")[0];
+  const index = NAV.slice(1).map(([id, label], i) => `<a href="#${id}"><span>${String(i + 1).padStart(2, "0")}</span>${label}</a>`).join("");
+  const ticker = [...INTERESTS, ...PROFILE.roles];
+  return `
+  <section id="home" class="hero">
+    <div class="container hero-grid">
+      <div class="hero-meta mono"><span>Portfolio · Vol. 01</span><span>${city} · ${new Date().getFullYear()}</span></div>
+      <div class="hero-text">
+        <p class="eyebrow" id="welcomeMsg">Hello there!</p>
+        <h1><span class="line">${firstName}</span><span class="line italic">${rest.join(" ")}<em class="scribble">← that's me</em></span></h1>
+        <p class="typing">a <span id="typed"></span><span class="caret">|</span></p>
+        <p class="lead">${tagline}</p>
+        <div class="btn-row">
+          <a href="#projects" class="btn primary">See my work</a>
+          <button class="btn" id="resumeBtn">Download CV</button>
+          <!-- LAB 1: inline JavaScript in an onclick attribute -->
+          <button class="btn ghost" onclick="sayHello()">say hi ♡</button>
+        </div>
+      </div>
+      <div class="hero-art">
+        <figure class="polaroid">
+          <span class="tape"></span>
+          <img src="${photo}" alt="${name}" data-label="${initials}" data-kind="avatar" onerror="imgFallback(this)">
+          <figcaption>${city.toLowerCase()}, sem ${currentSem} ♡</figcaption>
+        </figure>
+        <div class="visitor">
+          <p class="hand">psst, what's your name?</p>
+          <div class="row">
+            <input id="visitorName" placeholder="type it here" maxlength="30">
+            <button class="btn small primary" id="saveVisitor">save</button>
+          </div>
+          <div class="visitor-info" id="visitorInfo"></div>
+        </div>
+      </div>
+      <nav class="hero-index">${index}</nav>
+    </div>
+    <div class="marquee" aria-hidden="true"><div class="track-m">${[...ticker, ...ticker].map(t => `<span>${t}</span><i>✿</i>`).join("")}</div></div>
+  </section>`;
+}
+
+function renderAbout() {
+  const { about, degree, university, location, currentSem, contact: { email } } = PROFILE;  // nested destructuring
+  return `
+  <section id="about"><div class="container">
+    <div class="section-head reveal"><div class="kicker">01 / about me</div><h2>A little about <span class="grad">me</span></h2></div>
+    <div class="grid g2">
+      <div class="card reveal">${about.map(p => `<p style="margin-bottom:14px">${p}</p>`).join("")}</div>
+      <div class="card reveal">
+        <h3>Quick facts</h3>
+        <ul class="facts">
+          <li><b>Studying</b><span>${degree}</span></li>
+          <li><b>College</b><span>${university}</span></li>
+          <li><b>Semester</b><span>${currentSem} (third year)</span></li>
+          <li><b>Based in</b><span>${location}</span></li>
+          <li><b>Email</b><span style="word-break:break-all">${email}</span></li>
+          <li><b>Focus</b><span>ML for healthcare, efficient models, web apps</span></li>
+        </ul>
+      </div>
+    </div>
+  </div></section>`;
+}
+
+function renderEducation() {
+  return `
+  <section id="education"><div class="container">
+    <div class="section-head reveal"><div class="kicker">02 / education</div><h2>Education & <span class="grad">academics</span></h2></div>
+    <div class="grid g2">
+      <div class="timeline">
+        ${EDUCATION.map(e => `
+          <div class="card t-item reveal">
+            <div class="t-year">${e.year}</div>
+            <h3>${e.title}</h3>
+            <p class="muted">${e.place}</p>
+            ${e.detail ? `<p style="font-size:.9rem;margin-top:4px">${e.detail}</p>` : ""}
+            ${e.score ? `<p style="margin-top:6px"><span class="pill accent">${e.scoreLabel}: ${e.score}</span></p>` : ""}
+          </div>`).join("")}
+      </div>
+      <div class="card reveal">
+        <h3>Academic performance</h3>
+        <div style="display:flex;align-items:baseline;gap:14px;margin:10px 0 4px">
+          <span class="counter-cgpa" style="font-family:var(--serif);font-size:4.6rem;line-height:1;color:var(--accent)">${PROFILE.cgpa.toFixed(1)}</span>
+          <span class="muted">CGPA out of 10<br>B.Tech, up to Semester 4</span>
+        </div>
+        <div class="track" style="margin:14px 0 22px"><div class="fill" data-w="${PROFILE.cgpa * 10}"></div></div>
+        <h3 style="font-size:1rem">Relevant coursework</h3>
+        <div style="margin-top:6px">${COURSEWORK.map(c => `<span class="pill">${c}</span>`).join("")}</div>
+        <p class="muted" style="font-size:.85rem;margin-top:18px">Try the <a href="#lab" data-tab="grade" class="open-tab">grade calculator</a> in the JS Lab section to work out a semester result from subject marks.</p>
+      </div>
+    </div>
+  </div></section>`;
+}
+
+function renderSkills() {
+  const cats = { all: "All", lang: "Languages", ml: "AI / ML & data", web: "Web", cloud: "Cloud & DevOps" };
+  return `
+  <section id="skills"><div class="container">
+    <div class="section-head reveal"><div class="kicker">03 / skills</div><h2>Technical <span class="grad">skills</span></h2><p>Grouped by area, with the projects where I actually used each group.</p></div>
+    <div class="filters reveal" id="skillFilters">${Object.entries(cats).map(([k, v], i) => `<button data-cat="${k}" class="${i === 0 ? "on" : ""}">${v}</button>`).join("")}</div>
+    <div class="grid g3" id="skillGrid">
+      ${SKILLS.map(({ title, items, usedIn, cat }) => `
+        <div class="card skill reveal" data-cat="${cat}">
+          <h3 style="font-family:var(--serif);font-weight:400;font-size:1.6rem">${title}</h3>
+          <div style="margin:10px 0 14px">${items.map(i => `<span class="pill accent">${i}</span>`).join("")}</div>
+          <p class="muted" style="font-size:.84rem;border-top:1px dashed var(--border);padding-top:10px"><b style="font-weight:500">Used in:</b> ${usedIn}</p>
+        </div>`).join("")}
+    </div>
+  </div></section>`;
+}
+
+function renderAchievements() {
+  const stats = [
+    { n: PROJECTS.length + MORE_PROJECTS.length, label: "Projects built" },
+    { n: 1, label: "Patent published" },
+    { n: 3, label: "Research papers" },
+    { n: CERTIFICATES.length, label: "Certificates" }
+  ];
+  const certCats = { all: "All", sim: "Job simulations", ai: "AI / ML", cloud: "Cloud", prog: "Programming", event: "Events & contests" };
+  return `
+  <section id="achievements"><div class="container">
+    <div class="section-head reveal"><div class="kicker">05 / achievements</div><h2>Achievements & <span class="grad">certificates</span></h2></div>
+    <div class="stats">${stats.map(s => `<div class="card stat reveal"><div class="num grad counter" data-count="${s.n}">0</div><div class="muted">${s.label}</div></div>`).join("")}</div>
+    <div class="grid g2">
+      ${ACHIEVEMENTS.map(a => `
+        <div class="card ach reveal">
+          <div class="ico">${a.icon}</div>
+          <div><h3 style="font-size:1.05rem">${a.title} <span class="pill">${a.year}</span></h3><p class="muted" style="font-size:.92rem">${a.text}</p></div>
+        </div>`).join("")}
+    </div>
+
+    <h3 style="margin:50px 0 6px;font-family:var(--serif);font-weight:400;font-size:2rem" class="reveal">Certificates</h3>
+    <p class="muted reveal" style="margin-bottom:16px">Click any certificate to view it full size.</p>
+    <div class="filters" id="certFilters">${Object.entries(certCats).map(([k, v], i) => `<button data-cat="${k}" class="${i === 0 ? "on" : ""}">${v} <span style="opacity:.6">${k === "all" ? CERTIFICATES.length : CERTIFICATES.filter(c => c.cat === k).length}</span></button>`).join("")}</div>
+    <div class="grid g3" id="certGrid">
+      ${CERTIFICATES.map((c, i) => `
+        <div class="card cert" data-cert="${i}" data-cat="${c.cat}">
+          <img src="${c.img}" alt="${c.title}" data-label="${c.title}" onerror="imgFallback(this)" loading="lazy">
+          <div class="body"><b>${c.title}</b><p class="muted" style="font-size:.85rem">${c.issuer} · ${c.year}</p></div>
+        </div>`).join("")}
+    </div>
+    <div style="text-align:center;margin-top:22px"><button class="btn" id="certMore"></button></div>
+
+    <h3 style="margin:50px 0 18px;font-family:var(--serif);font-weight:400;font-size:2rem" class="reveal">Contributions & participation</h3>
+    <div class="grid g3">
+      ${ACTIVITIES.map(a => `
+        <div class="card ach reveal">
+          <div class="ico">${a.icon}</div>
+          <div><b>${a.title}</b><p class="muted" style="font-size:.9rem">${a.text}</p></div>
+        </div>`).join("")}
+    </div>
+  </div></section>`;
+}
+
+/* ---- certificate filter + "show more" (jQuery) ---- */
+function initCertFilter() {
+  const LIMIT = 8;
+  let cat = "all", expanded = false;
+  function apply() {
+    const $cards = $("#certGrid .cert");
+    const $match = $cards.filter((_, el) => cat === "all" || el.dataset.cat === cat);
+    $cards.hide();
+    (expanded ? $match : $match.slice(0, LIMIT)).fadeIn(200);
+    const hidden = $match.length - LIMIT;
+    $("#certMore").toggle(hidden > 0).text(expanded ? "Show fewer" : `Show all ${$match.length} certificates`);
+  }
+  $("#certFilters").on("click", "button", function () {
+    cat = $(this).data("cat");
+    expanded = false;
+    $(this).addClass("on").siblings().removeClass("on");
+    apply();
+  });
+  $("#certMore").on("click", () => { expanded = !expanded; apply(); });
+  apply();
+}
+
+function renderProjects() {
+  return `
+  <section id="projects"><div class="container">
+    <div class="section-head reveal"><div class="kicker">04 / projects</div><h2>Things I've <span class="grad">built</span></h2></div>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">
+      ${PROJECTS.map(p => `
+        <article class="card project reveal">
+          <div class="cover"><img src="${p.img || "missing.png"}" alt="${p.title}" data-label="${p.title.split(":")[0]}" onerror="imgFallback(this)" loading="lazy"></div>
+          <div class="body">
+            <span class="pill accent" style="align-self:flex-start">${p.type}</span>
+            <h3>${p.title}</h3>
+            <p class="muted" style="font-size:.92rem">${p.desc}</p>
+            <ul>${p.points.map(pt => `<li>${pt}</li>`).join("")}</ul>
+            <div>${p.tags.map(t => `<span class="pill">${t}</span>`).join("")}</div>
+            <div class="links">
+              ${p.github ? `<a class="btn small" href="${p.github}" target="_blank" rel="noopener">GitHub ↗</a>` : ""}
+              ${p.live ? `<a class="btn small primary" href="${p.live}" target="_blank" rel="noopener">Live demo ↗</a>` : ""}
+            </div>
+          </div>
+        </article>`).join("")}
+    </div>
+
+    <h3 class="reveal" style="margin:50px 0 14px;font-family:var(--serif);font-weight:400;font-size:2rem">More things I've built</h3>
+    <div class="more-list reveal">
+      ${MORE_PROJECTS.map(p => `
+        <a class="more-item" href="${p.url}" target="_blank" rel="noopener">
+          <div><b>${p.title}</b><p class="muted">${p.text}</p></div>
+          <span class="mono muted">${p.tags} ↗</span>
+        </a>`).join("")}
+    </div>
+
+    <div class="card reveal" style="margin-top:30px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <div><h3>Live from GitHub</h3><p class="muted" id="repoStatus" style="font-size:.85rem">Loading…</p></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <input id="repoSearch" placeholder="Filter repositories…" style="width:200px">
+          <button class="btn small" id="reloadFetch">Reload with fetch()</button>
+          <button class="btn small" id="reloadJQ">Load with $.getJSON()</button>
+        </div>
+      </div>
+      <div class="table-wrap" style="margin-top:14px">
+        <table>
+          <thead><tr><th class="sortable" data-key="name">Repository ↕</th><th>Description</th><th class="sortable" data-key="language">Language ↕</th><th class="sortable" data-key="stars">★ ↕</th><th class="sortable" data-key="updated">Updated ↕</th></tr></thead>
+          <tbody id="repoBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div></section>`;
+}
+
+function renderCareer() {
+  return `
+  <section id="career" style="padding-top:0"><div class="container">
+    <div class="section-head reveal"><div class="kicker">06 / career</div><h2>Career <span class="grad">interests</span></h2></div>
+    <div class="grid g2">
+      <div class="card reveal">
+        <h3>What I want to work on</h3>
+        <div style="margin:12px 0">${INTERESTS.map(i => `<span class="pill accent">${i}</span>`).join("")}</div>
+        <p class="muted">I'm looking for <b>internships in ML engineering or full-stack development</b>, ideally on a team that ships models to real users. I'm especially interested in healthcare and in making models small enough to run on everyday devices.</p>
+      </div>
+      <div class="card reveal">
+        <h3>⏳ Countdown: ${PROFILE.countdown.label}</h3>
+        <div class="countdown" id="countdown">
+          ${["days", "hours", "minutes", "seconds"].map(u => `<div><b id="cd-${u}">--</b><span>${u}</span></div>`).join("")}
+        </div>
+        <p class="muted" style="font-size:.85rem;margin-top:12px" id="cdNote">Updated every second with setInterval().</p>
+      </div>
+    </div>
+    <div class="card reveal" style="margin-top:20px">
+      <h3>Experience & job simulations</h3>
+      <div class="timeline" style="margin-top:18px">
+        ${EXPERIENCE.map(x => `
+          <div class="t-item" style="margin-bottom:16px">
+            <div class="t-year">${x.when}</div>
+            <b>${x.role}</b> <span class="muted">· ${x.org}</span>
+            <p class="muted" style="font-size:.9rem">${x.text}</p>
+          </div>`).join("")}
+      </div>
+    </div>
+  </div></section>`;
+}
+
+function renderGallery() {
+  return `
+  <section id="gallery"><div class="container">
+    <div class="section-head reveal"><div class="kicker">07 / gallery</div><h2>Moments & <span class="grad">milestones</span></h2><p>Click any photo to open it larger. Use the arrow keys to move between photos and Esc to close.</p></div>
+    <div class="gallery">
+      ${GALLERY.map((g, i) => `
+        <figure class="reveal" data-index="${i}">
+          <img src="${g.src}" alt="${g.caption}" data-label="${g.caption}" onerror="imgFallback(this)" loading="lazy">
+          <figcaption>${g.caption}</figcaption>
+        </figure>`).join("")}
+    </div>
+  </div></section>`;
+}
+
+function renderLab() {
+  const tabs = [
+    ["bill", "🧾 Billing", "Lab 2"], ["grade", "🎓 Grades", "Lab 3"], ["pal", "🔁 Palindrome", "Lab 4"],
+    ["cart", "🛒 Cart", "Lab 5"], ["text", "🔍 Text & Regex", "Lab 6"], ["todo", "✅ To-Do", "Lab 7"]
+  ];
+  return `
+  <section id="lab"><div class="container">
+    <div class="section-head reveal"><div class="kicker">coursework · javascript lab</div><h2>JavaScript <span class="grad">lab work</span></h2>
+      <p><a href="index.html">← Back to the portfolio</a></p>
+      <p>Working versions of the experiments from my JavaScript lab course (CA3). Open the browser console (F12) to see the logging too.</p></div>
+    <div class="card reveal">
+      <div class="tabs" id="labTabs">${tabs.map(([id, label, lab], i) => `<button data-tab="${id}" class="${i === 0 ? "on" : ""}" title="${lab}">${label}</button>`).join("")}</div>
+
+      <!-- LAB 2 -->
+      <div class="tab-panel on" id="tab-bill">
+        <div class="lab-tag">LAB 2 · var / let / const · template literals · destructuring</div>
+        <h3>Billing calculator</h3>
+        <div class="form-row" style="margin-top:12px">
+          <div><label>Item</label><input id="billItem" placeholder="e.g. Notebook"></div>
+          <div><label>Price (₹)</label><input id="billPrice" type="number" min="0" placeholder="120"></div>
+          <div><label>Quantity</label><input id="billQty" type="number" min="1" value="1"></div>
+          <div><label>GST</label><select id="billGst"><option value="0">0%</option><option value="5">5%</option><option value="12">12%</option><option value="18" selected>18%</option><option value="28">28%</option></select></div>
+        </div>
+        <div class="btn-row"><button class="btn primary small" id="billAdd">Add item</button><button class="btn small" id="billClear">Clear bill</button></div>
+        <div class="out" id="billOut"></div>
+      </div>
+
+      <!-- LAB 3 -->
+      <div class="tab-panel" id="tab-grade">
+        <div class="lab-tag">LAB 3 · control structures · form validation</div>
+        <h3>Grading system</h3>
+        <p class="muted" style="font-size:.9rem">Enter marks out of 100. Subject names can be edited too.</p>
+        <div id="gradeInputs" style="margin-top:12px"></div>
+        <button class="btn primary small" id="gradeBtn">Calculate result</button>
+        <div class="out" id="gradeOut"></div>
+      </div>
+
+      <!-- LAB 4 -->
+      <div class="tab-panel" id="tab-pal">
+        <div class="lab-tag">LAB 4 · function types · scope · closures · try / catch</div>
+        <h3>Palindrome checker</h3>
+        <div class="form-row" style="margin-top:12px"><div style="grid-column:1/-1"><input id="palInput" placeholder='Try "Never odd or even" or 12321'></div></div>
+        <button class="btn primary small" id="palBtn">Check</button>
+        <div class="out" id="palOut"></div>
+      </div>
+
+      <!-- LAB 5 -->
+      <div class="tab-panel" id="tab-cart">
+        <div class="lab-tag">LAB 5 · array methods · objects · discount logic</div>
+        <h3>Cart total calculator</h3>
+        <div class="grid g2" style="margin-top:12px">
+          <div><div class="products" id="products"></div></div>
+          <div>
+            <div id="cartLines"></div>
+            <div class="form-row" style="margin-top:12px"><input id="coupon" placeholder="Coupon (try STUDENT15)"><button class="btn small" id="applyCoupon">Apply</button></div>
+            <div class="out" id="cartOut"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LAB 6 -->
+      <div class="tab-panel" id="tab-text">
+        <div class="lab-tag">LAB 6 · string methods · regex · email validation · data extraction</div>
+        <h3>Text analyser</h3>
+        <textarea id="textIn" rows="5" style="margin-top:12px">Hello! I'm Ishika from SIT Nagpur. Reach me at ishika.dev@example.com or team-relay@hack.io, call +91 9876543210, or visit https://github.com/ishikadubey1105. Built in 2026 #javascript #portfolio. Contact fake@bad, too.</textarea>
+        <div class="btn-row" style="margin-top:10px">
+          <button class="btn primary small" id="analyzeBtn">Analyse</button>
+          <button class="btn small" data-tx="title">Title Case</button>
+          <button class="btn small" data-tx="upper">UPPERCASE</button>
+          <button class="btn small" data-tx="reverse">Reverse words</button>
+          <button class="btn small" data-tx="slug">Slugify</button>
+        </div>
+        <div class="out" id="textOut"></div>
+      </div>
+
+      <!-- LAB 7 -->
+      <div class="tab-panel" id="tab-todo">
+        <div class="lab-tag">LAB 7 · DOM traversal & updates · add / edit / delete</div>
+        <h3>My learning goals <span class="muted" id="todoCount" style="font-size:.85rem"></span></h3>
+        <form id="todoForm" class="form-row" style="margin-top:12px;grid-template-columns:1fr auto">
+          <input id="todoInput" placeholder="Add a goal and press Enter" maxlength="80">
+          <button class="btn primary small" type="submit">Add</button>
+        </form>
+        <ul class="todo-list" id="todoList"></ul>
+      </div>
+    </div>
+  </div></section>`;
+}
+
+function renderContact() {
+  const { email, phone, linkedin } = PROFILE.contact;
+  const links = [
+    { label: "✉ Email", href: `mailto:${email}` },
+    { label: "🐙 GitHub", href: githubURL },
+    linkedin && { label: "💼 LinkedIn", href: linkedin },
+    phone && { label: "📞 " + phone, href: `tel:${phone.replace(/\s/g, "")}` }
+  ].filter(Boolean);                                  // drop the null/false entries
+  return `
+  <section id="contact"><div class="container">
+    <div class="section-head reveal"><div class="kicker">08 / contact</div><h2>Let's <span class="grad">talk</span></h2><p>Have an internship, a project idea, or just a question? Send a message.</p></div>
+    <div class="grid g2">
+      <div class="card reveal">
+        <h3>Find me online</h3>
+        <ul class="facts" style="margin-top:14px">
+          <li><b>Email</b><a href="mailto:${email}" style="word-break:break-all">${email}</a></li>
+          <li><b>GitHub</b><a href="${githubURL}" target="_blank" rel="noopener">@${PROFILE.contact.githubUser}</a></li>
+          <li><b>LinkedIn</b>${linkedin ? `<a href="${linkedin}" target="_blank" rel="noopener">View profile</a>` : TBD}</li>
+          <li><b>College</b><a href="mailto:${PROFILE.contact.collegeEmail}" style="word-break:break-all">${PROFILE.contact.collegeEmail}</a></li>
+          <li><b>Phone</b>${phone ? `<a href="tel:${phone.replace(/\s/g, "")}">${phone}</a>` : TBD}</li>
+          <li><b>Location</b><span>${PROFILE.location}</span></li>
+        </ul>
+        <div class="socials">${links.map(l => `<a class="btn small" href="${l.href}" target="_blank" rel="noopener">${l.label}</a>`).join("")}</div>
+      </div>
+
+      <!-- LAB 8: live form validation with events -->
+      <form class="card reveal" id="contactForm" novalidate>
+        <div class="lab-tag">LAB 8 · form events · live input checks</div>
+        <div class="form-row" style="margin-bottom:0">
+          <div class="field"><label for="cName">Name *</label><input id="cName" name="name" autocomplete="name"><small></small></div>
+          <div class="field"><label for="cEmail">Email *</label><input id="cEmail" name="email" type="email" autocomplete="email"><small></small></div>
+        </div>
+        <div class="form-row" style="margin-bottom:0">
+          <div class="field"><label for="cPhone">Phone (optional)</label><input id="cPhone" name="phone" placeholder="10-digit mobile"><small></small></div>
+          <div class="field"><label for="cPurpose">Purpose *</label>
+            <select id="cPurpose" name="purpose"><option value="">Choose…</option><option>Internship opportunity</option><option>Project collaboration</option><option>Feedback on my work</option><option>Just saying hi</option></select><small></small></div>
+        </div>
+        <div class="field"><label for="cMsg">Message * <span id="msgCount" class="muted">0 / 500</span></label><textarea id="cMsg" name="message" rows="4" maxlength="500"></textarea><small></small></div>
+        <button class="btn primary" type="submit" style="width:100%;justify-content:center">Send message ✈</button>
+        <p class="muted" style="font-size:.8rem;margin-top:8px">Sending opens your email app with the message filled in. Unsent drafts are kept for this browser tab (sessionStorage).</p>
+      </form>
+    </div>
+  </div></section>`;
+}
+
+function renderFooter() {
+  return `
+  <footer><div class="container">
+    <span>© <span id="year"></span> ${PROFILE.name} · Built with JavaScript & jQuery</span>
+    <span class="mono" id="liveClock"></span>
+    <span id="sessionInfo"></span>
+    <!-- LAB 1: inline JavaScript -->
+    <a href="index.html">← Back to portfolio</a>
+  </div></footer>`;
+}
+
+function renderOverlays() {
+  return `
+  <aside class="drawer" id="drawer">
+    <div style="display:flex;justify-content:space-between;align-items:center"><h3>Preferences</h3><button class="icon-btn" id="closeDrawer">✕</button></div>
+    <p class="muted" style="font-size:.85rem;margin:-8px 0 18px">Saved in your browser with localStorage, so they're still here next time.</p>
+    <div class="group"><label>Theme</label><div class="seg" id="themeSeg"><button data-theme="light">☀ Light</button><button data-theme="dark">🌙 Dark</button><button data-theme="system">💻 Auto</button></div></div>
+    <div class="group"><label>Accent colour</label><div class="swatches" id="swatches">${ACCENTS.map(c => `<button data-color="${c}" style="background:${c}" title="${c}"></button>`).join("")}</div></div>
+    <div class="group"><label><input type="checkbox" id="motionToggle" style="width:auto;margin-right:8px">Reduce animations</label></div>
+    <div class="group"><label>This session (sessionStorage)</label><p id="sessionDetail" style="font-size:.9rem"></p></div>
+    <button class="btn small" id="resetPrefs">Reset all saved data</button>
+  </aside>
+  <div class="lightbox" id="lightbox">
+    <button class="lb-btn lb-close" id="lbClose">✕</button>
+    <button class="lb-btn lb-prev" id="lbPrev">‹</button>
+    <img id="lbImg" alt="">
+    <p id="lbCap"></p>
+    <button class="lb-btn lb-next" id="lbNext">›</button>
+  </div>
+  <div class="toast" id="toast"></div>`;
+}
+
+
+/* =====================================================================
+   3. FEATURE MODULES
+   ===================================================================== */
+
+/* ---- LAB 9: theme & preferences (localStorage + sessionStorage) ---- */
+const Prefs = {
+  apply() {
+    const saved = Local.get("pf_theme", "system");
+    const dark = saved === "dark" || (saved === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    document.documentElement.dataset.theme = dark ? "dark" : "light";
+    document.documentElement.style.setProperty("--accent", Local.get("pf_accent", ACCENTS[0]));
+    document.body.classList.toggle("reduce-motion", Local.get("pf_motion", false));
+    $("#themeSeg button").removeClass("on").filter(`[data-theme="${saved}"]`).addClass("on");
+    $("#swatches button").removeClass("on").filter(`[data-color="${Local.get("pf_accent", ACCENTS[0])}"]`).addClass("on");
+    $("#motionToggle").prop("checked", Local.get("pf_motion", false));
+  },
+  init() {
+    this.apply();
+    $("#themeBtn").on("click", () => {
+      const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+      Local.set("pf_theme", next); this.apply();
+      showToast(`${next === "dark" ? "🌙 Dark" : "☀ Light"} theme saved`);
+    });
+    $("#themeSeg").on("click", "button", e => { Local.set("pf_theme", e.currentTarget.dataset.theme); this.apply(); });
+    $("#swatches").on("click", "button", e => { Local.set("pf_accent", e.currentTarget.dataset.color); this.apply(); });
+    $("#motionToggle").on("change", e => { Local.set("pf_motion", e.target.checked); this.apply(); });
+    $("#settingsBtn").on("click", () => $("#drawer").addClass("open"));
+    $("#closeDrawer").on("click", () => $("#drawer").removeClass("open"));
+    $("#resetPrefs").on("click", () => {
+      ["pf_theme", "pf_accent", "pf_motion", "pf_visitor", "pf_todos"].forEach(k => Local.remove(k));
+      showToast("Saved data cleared, reloading…");
+      setTimeout(() => location.reload(), 900);
+    });
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => this.apply());
+
+    // sessionStorage: counts page views and sections seen in this tab only
+    const views = Session.get("pf_views", 0) + 1;
+    Session.set("pf_views", views);
+    if (!Session.get("pf_started", null)) Session.set("pf_started", Date.now());
+    this.updateSession();
+  },
+  updateSession() {
+    const seen = Session.get("pf_seen", []);
+    const mins = Math.max(0, Math.round((Date.now() - Session.get("pf_started", Date.now())) / 60000));
+    $("#sessionInfo").text(`Sections viewed this visit: ${seen.length}/${NAV.length}`);
+    $("#sessionDetail").html(`Page loads in this tab: <b>${Session.get("pf_views", 1)}</b><br>Time on site: <b>${mins} min</b><br>Sections seen: <b>${seen.join(", ") || "none yet"}</b>`);
+  }
+};
+
+/* ---- LAB 1: visitor info and welcome message ---- */
+function initVisitor() {
+  const nameInput = document.getElementById("visitorName");
+  const welcome = document.getElementById("welcomeMsg");
+
+  function greet() {
+    const name = Local.get("pf_visitor", "");
+    const hour = new Date().getHours();
+    let part;                                          // control flow: if / else if / else
+    if (hour < 12) part = "Good morning";
+    else if (hour < 17) part = "Good afternoon";
+    else part = "Good evening";
+    welcome.textContent = name ? `${part}, ${name}! Welcome back.` : `${part}! Welcome to my portfolio.`;
+    nameInput.value = name;
+  }
+  function save() {
+    const name = nameInput.value.trim();
+    if (name && !/^[A-Za-z][A-Za-z .'-]{0,29}$/.test(name)) { showToast("Please use letters only"); return; }
+    Local.set("pf_visitor", name);
+    greet();
+    showToast(name ? `Nice to meet you, ${name}!` : "Name cleared");
+    console.log(`Visitor name saved: "${name}"`);
+  }
+  document.getElementById("saveVisitor").addEventListener("click", save);
+  nameInput.addEventListener("keydown", e => { if (e.key === "Enter") save(); });
+  greet();
+
+  const info = {
+    "🕒 Your time": new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    "🌐 Language": navigator.language,
+    "📍 Time zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+    "🖥 Screen": `${screen.width}×${screen.height}`
+  };
+  document.getElementById("visitorInfo").innerHTML = Object.entries(info).map(([k, v]) => `<span>${k}: <b>${escapeHTML(v)}</b></span>`).join("");
+  console.table(info);
+}
+
+/* ---- VA 11: timers, typing effect with setTimeout ---- */
+function startTyping() {
+  const el = document.getElementById("typed");
+  const roles = PROFILE.roles;
+  let roleIndex = 0, charIndex = 0, deleting = false;
+  (function tick() {                                   // IIFE that schedules itself again
+    const word = roles[roleIndex];
+    charIndex += deleting ? -1 : 1;
+    el.textContent = word.slice(0, charIndex);
+    let delay = deleting ? 45 : 95;
+    if (!deleting && charIndex === word.length) { deleting = true; delay = 1600; }
+    else if (deleting && charIndex === 0) { deleting = false; roleIndex = (roleIndex + 1) % roles.length; delay = 400; }
+    setTimeout(tick, delay);
+  })();
+}
+
+/* ---- VA 11: clock + countdown with setInterval (format functions come from an ES6 module) ---- */
+const Countdown = {
+  started: false,
+  start(mod) {
+    if (this.started) return;
+    this.started = true;
+    // If the module loaded, use its exported functions; otherwise use local fallbacks
+    const split = mod ? mod.splitDuration : ms => ({ days: Math.floor(ms / 864e5), hours: Math.floor(ms / 36e5) % 24, minutes: Math.floor(ms / 6e4) % 60, seconds: Math.floor(ms / 1e3) % 60 });
+    const pad = mod ? mod.pad : n => String(n).padStart(2, "0");
+    const target = new Date(PROFILE.countdown.date).getTime();
+    if (mod) document.getElementById("cdNote").textContent = "Updated every second with setInterval(); formatting functions are imported from an ES6 module.";
+
+    const timer = setInterval(() => {
+      const left = target - Date.now();
+      if (left <= 0) {
+        clearInterval(timer);
+        document.getElementById("countdown").innerHTML = "<p><b>🎉 It's here!</b></p>";
+        return;
+      }
+      const parts = split(left);
+      for (const unit in parts) document.getElementById(`cd-${unit}`).textContent = pad(parts[unit]);
+    }, 1000);
+
+    const clock = document.getElementById("liveClock");
+    const tickClock = () => clock.textContent = "🕒 " + new Date().toLocaleTimeString();
+    tickClock();
+    setInterval(tickClock, 1000);
+    setInterval(() => Prefs.updateSession(), 30000);
+  }
+};
+
+/* ---- LAB 7 + 12: scroll reveal, skill bars, counters, nav highlight (jQuery) ---- */
+function initScrollEffects() {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      el.classList.add("in");
+      el.querySelectorAll(".fill").forEach(f => f.style.width = f.dataset.w + "%");
+      el.querySelectorAll(".bar div").forEach(b => b.style.height = b.dataset.h + "%");
+      if (el.classList.contains("stat")) animateCounter(el.querySelector(".counter"));
+      observer.unobserve(el);
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+
+  function animateCounter(el) {
+    const end = Number(el.dataset.count);
+    let current = 0;
+    const id = setInterval(() => {
+      el.textContent = ++current;
+      if (current >= end) clearInterval(id);
+    }, Math.max(40, 1200 / Math.max(end, 1)));
+    if (end === 0) { clearInterval(id); el.textContent = 0; }
+  }
+
+  // jQuery scroll handler: progress bar + active nav link + sections seen this session
+  const $links = $("#navLinks a");
+  $(window).on("scroll", function () {
+    const top = $(this).scrollTop();
+    const max = $(document).height() - $(window).height();
+    $("#scrollProgress").css("width", (top / max) * 100 + "%");
+    let current = "home";
+    NAV.forEach(([id]) => { const $s = $("#" + id); if ($s.length && $s.offset().top - 120 <= top) current = id; });
+    $links.removeClass("active").filter(`[data-target="${current}"]`).addClass("active");
+    const seen = Session.get("pf_seen", []);
+    if (!seen.includes(current)) { seen.push(current); Session.set("pf_seen", seen); Prefs.updateSession(); }
+  }).trigger("scroll");
+
+  $("#burger").on("click", () => $("#navLinks").toggleClass("open"));
+  $links.on("click", () => $("#navLinks").removeClass("open"));
+}
+
+/* ---- skills filter with jQuery effects ---- */
+function initSkillFilter() {
+  $("#skillFilters").on("click", "button", function () {
+    const cat = $(this).data("cat");
+    $(this).addClass("on").siblings().removeClass("on");
+    $("#skillGrid .skill").each(function () {
+      const show = cat === "all" || $(this).data("cat") === cat;
+      show ? $(this).stop(true).fadeIn(250) : $(this).stop(true).fadeOut(150);
+    });
+  });
+}
+
+/* ---- LAB 10: load JSON with fetch() and jQuery $.getJSON(), render a table ---- */
+const Repos = {
+  data: [], sortKey: "updated", asc: false,
+  normalise: r => ({ name: r.name, desc: r.description || "–", language: r.language || "–", stars: r.stargazers_count || 0, updated: r.updated_at, url: r.html_url }),
+
+  async loadWithFetch() {
+    this.status("Fetching live data from the GitHub API with fetch()…");
+    try {
+      const res = await fetch(`https://api.github.com/users/${PROFILE.contact.githubUser}/repos?sort=updated&per_page=30`);
+      if (!res.ok) throw new Error(`GitHub responded with HTTP ${res.status}`);
+      const json = await res.json();
+      const own = json.filter(r => !r.fork);
+      if (!own.length) throw new Error("no public repositories found");
+      this.data = own.map(this.normalise);
+      this.render();
+      this.status(`✅ ${this.data.length} repositories loaded live with fetch() · ${new Date().toLocaleTimeString()}`);
+    } catch (err) {
+      console.warn("fetch() failed, falling back to $.getJSON():", err.message);
+      this.loadWithJQuery(`GitHub API unavailable (${err.message}), so `);
+    }
+  },
+
+  loadWithJQuery(prefix = "") {
+    // Turn the local data into a JSON "file" in memory so $.getJSON() can request it
+    const url = URL.createObjectURL(new Blob([JSON.stringify(LOCAL_REPOS)], { type: "application/json" }));
+    $.getJSON(url)
+      .done(json => { this.data = json.map(this.normalise); this.status(`📦 ${prefix}${this.data.length} repositories loaded from local JSON with jQuery $.getJSON()`); })
+      .fail(() => { this.data = LOCAL_REPOS.map(this.normalise); this.status("📦 Loaded built-in repository data"); })
+      .always(() => { URL.revokeObjectURL(url); this.render(); });
+  },
+
+  status(msg) { $("#repoStatus").text(msg); },
+
+  render() {
+    const q = ($("#repoSearch").val() || "").toLowerCase();
+    const { sortKey, asc } = this;
+    const rows = this.data
+      .filter(r => `${r.name} ${r.desc} ${r.language}`.toLowerCase().includes(q))
+      .sort((a, b) => {
+        const x = a[sortKey], y = b[sortKey];
+        const cmp = typeof x === "number" ? x - y : String(x).localeCompare(String(y));
+        return asc ? cmp : -cmp;
+      });
+    $("#repoBody").html(rows.length ? rows.map(r => `
+      <tr><td><a href="${r.url}" target="_blank" rel="noopener"><b>${escapeHTML(r.name)}</b></a></td><td class="muted">${escapeHTML(r.desc)}</td>
+      <td><span class="pill">${escapeHTML(r.language)}</span></td><td>${r.stars}</td><td class="muted">${new Date(r.updated).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</td></tr>`).join("")
+      : `<tr><td colspan="5" class="muted">No repositories match "${escapeHTML(q)}"</td></tr>`);
+  },
+
+  init() {
+    $("#repoSearch").on("input", () => this.render());
+    $("#reloadFetch").on("click", () => this.loadWithFetch());
+    $("#reloadJQ").on("click", () => this.loadWithJQuery("on request, "));
+    $("th.sortable").on("click", e => {
+      const key = e.currentTarget.dataset.key;
+      this.asc = this.sortKey === key ? !this.asc : true;
+      this.sortKey = key;
+      this.render();
+    });
+    this.loadWithFetch();
+  }
+};
+
+/* ---- Gallery & certificate lightbox ---- */
+function initLightbox() {
+  const box = document.getElementById("lightbox");
+  const img = document.getElementById("lbImg");
+  const cap = document.getElementById("lbCap");
+  let items = [], index = 0;
+
+  const show = () => { img.src = items[index].src; cap.textContent = `${items[index].caption}  (${index + 1}/${items.length})`; };
+  const open = (list, i) => { items = list; index = i; show(); box.classList.add("open"); };
+  const close = () => box.classList.remove("open");
+  const move = step => { index = (index + step + items.length) % items.length; show(); };
+
+  // read the currently displayed src, so placeholders show too
+  document.querySelectorAll(".gallery figure").forEach(fig => fig.addEventListener("click", () => {
+    const list = [...document.querySelectorAll(".gallery figure img")].map(im => ({ src: im.src, caption: im.alt }));
+    open(list, Number(fig.dataset.index));
+  }));
+  document.querySelectorAll(".cert").forEach(card => card.addEventListener("click", () => {
+    const list = [...document.querySelectorAll(".cert img")].map(im => ({ src: im.src, caption: im.alt }));
+    open(list, Number(card.dataset.cert));
+  }));
+  document.getElementById("lbClose").onclick = close;
+  document.getElementById("lbPrev").onclick = () => move(-1);
+  document.getElementById("lbNext").onclick = () => move(1);
+  box.addEventListener("click", e => { if (e.target === box) close(); });
+  document.addEventListener("keydown", e => {
+    if (!box.classList.contains("open")) return;
+    switch (e.key) {
+      case "Escape": close(); break;
+      case "ArrowLeft": move(-1); break;
+      case "ArrowRight": move(1); break;
+    }
+  });
+}
+
+/* ---- Downloadable CV, generated from the PROFILE data ---- */
+function downloadResume() {
+  if (PROFILE.resumePdf) {
+    const a = document.createElement("a");
+    a.href = PROFILE.resumePdf; a.download = ""; a.click();
+    return;
+  }
+  const { name, degree, university, location, contact } = PROFILE;
+  const section = (title, body) => `<h2>${title}</h2>${body}`;
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${name}: CV</title>
+  <style>body{font-family:Segoe UI,Arial,sans-serif;max-width:780px;margin:30px auto;color:#222;line-height:1.5;padding:0 20px}
+  h1{margin:0}h2{font-size:15px;text-transform:uppercase;letter-spacing:.08em;color:#5b3fd9;border-bottom:2px solid #eee;padding-bottom:4px;margin-top:22px}
+  .sub{color:#555}ul{margin:4px 0;padding-left:20px}.row{display:flex;justify-content:space-between}</style></head><body>
+  <h1>${name}</h1>
+  <div class="sub">${degree}, ${university} · CGPA ${PROFILE.cgpa} · ${location}</div>
+  <div class="sub">${contact.email}${contact.phone ? " · " + contact.phone : ""} · ${githubURL}${contact.linkedin ? " · " + contact.linkedin : ""}</div>
+  ${section("Profile", `<p>${PROFILE.about[0]}</p>`)}
+  ${section("Education", EDUCATION.filter(e => !e.todo || e.place).map(e => `<div class="row"><b>${e.title}</b><span>${e.year}</span></div><div class="sub">${e.place || ""}${e.score ? ` · ${e.scoreLabel}: ${e.score}` : ""}</div>`).join(""))}
+  ${section("Projects", PROJECTS.map(p => `<p><b>${p.title}</b> <i>(${p.type})</i>${p.live ? ` · ${p.live}` : ""}<br>${p.desc}</p><ul>${p.points.map(x => `<li>${x}</li>`).join("")}</ul>`).join(""))}
+  ${section("Experience", `<ul>${EXPERIENCE.map(x => `<li><b>${x.role}</b>, ${x.org} (${x.when})</li>`).join("")}</ul>`)}
+  ${section("Patent & publications", `<ul><li>Co-inventor, Indian patent application 202521127286 A: System and Method for CO₂ Emission Forecasting Using ML Models (published 2 Jan 2026)</li><li>DoRT-Net: safety-aware skin-lesion triage</li><li>CO₂ Emission in India: Trend Analyzer Using Data Analytics and ML</li><li>Toward a FinOps-Driven Cloud-Native Expense Manager</li></ul>`)}
+  ${section("Skills", SKILLS.map(g => `<p><b>${g.title}:</b> ${g.items.join(", ")}</p>`).join(""))}
+  ${section("Achievements", `<ul>${ACHIEVEMENTS.filter(a => !a.todo).map(a => `<li><b>${a.title}</b>: ${a.text}</li>`).join("")}</ul>`)}
+  ${section("Certificates", `<ul>${CERTIFICATES.filter(c => c.cat !== "event").slice(0, 12).map(c => `<li>${c.title}, ${c.issuer} (${c.year})</li>`).join("")}</ul>`)}
+  </body></html>`;
+
+  const win = window.open("", "_blank");
+  if (win) {
+    win.document.write(html);
+    win.document.close();
+    setTimeout(() => win.print(), 500);              // "Save as PDF" from the print dialog
+  } else {
+    // pop-up blocked: download it as an HTML file instead
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([html], { type: "text/html" }));
+    a.download = `${name.replace(/\s+/g, "_")}_CV.html`;
+    a.click();
+  }
+}
+
+/* ---- Lab tabs (event delegation) ---- */
+function initTabs() {
+  const activate = id => {
+    document.querySelectorAll("#labTabs button").forEach(b => b.classList.toggle("on", b.dataset.tab === id));
+    document.querySelectorAll(".tab-panel").forEach(p => p.classList.toggle("on", p.id === "tab-" + id));
+  };
+  document.getElementById("labTabs").addEventListener("click", e => {
+    const btn = e.target.closest("button");
+    if (btn) activate(btn.dataset.tab);
+  });
+  document.querySelectorAll(".open-tab").forEach(a => a.addEventListener("click", () => activate(a.dataset.tab)));
+}
+
+
+/* =====================================================================
+   4. JS LAB EXPERIMENTS
+   ===================================================================== */
+
+/* ---- LAB 2: var / let / const, template literals, destructuring ---- */
+function initBilling() {
+  var invoiceNo = 1001;            // var: function-scoped, kept here only to show the difference
+  let items = [];                  // let: block-scoped and reassignable
+  const out = document.getElementById("billOut");
+
+  const readInputs = () => ({
+    item: document.getElementById("billItem").value.trim(),
+    price: parseFloat(document.getElementById("billPrice").value),
+    qty: parseInt(document.getElementById("billQty").value, 10),
+    gst: Number(document.getElementById("billGst").value)
+  });
+
+  function render() {
+    if (!items.length) { out.innerHTML = ""; return; }
+    // destructuring inside reduce
+    const totals = items.reduce((acc, { price, qty, gst }) => {
+      const base = price * qty;
+      acc.subtotal += base;
+      acc.tax += base * gst / 100;
+      return acc;
+    }, { subtotal: 0, tax: 0 });
+    const { subtotal, tax } = totals;
+    const grand = subtotal + tax;
+    out.innerHTML = `
+      <b>Invoice #${invoiceNo}</b> · ${new Date().toLocaleDateString("en-IN")}
+      <div class="table-wrap"><table style="margin-top:8px">
+        <tr><th>Item</th><th>Qty</th><th>Rate</th><th>GST</th><th>Amount</th></tr>
+        ${items.map(({ item, qty, price, gst }) => `<tr><td>${escapeHTML(item)}</td><td>${qty}</td><td>${rupee(price)}</td><td>${gst}%</td><td>${rupee(price * qty)}</td></tr>`).join("")}
+      </table></div>
+      <p style="margin-top:10px">Subtotal: <b>${rupee(subtotal)}</b> · GST: <b>${rupee(tax)}</b></p>
+      <p style="font-size:1.15rem">Grand total: <b class="grad">${rupee(grand)}</b></p>`;
+  }
+
+  document.getElementById("billAdd").addEventListener("click", () => {
+    const { item, price, qty, gst } = readInputs();
+    if (!item) return showToast("Enter an item name");
+    if (isNaN(price) || price <= 0) return showToast("Enter a valid price");
+    if (isNaN(qty) || qty < 1) return showToast("Quantity must be at least 1");
+    items = [...items, { item, price, qty, gst }];     // spread to build a new array
+    console.log(`Bill line added: ${qty} × ${item} @ ${rupee(price)}`);
+    document.getElementById("billItem").value = "";
+    document.getElementById("billPrice").value = "";
+    document.getElementById("billItem").focus();
+    render();
+  });
+  document.getElementById("billClear").addEventListener("click", () => { items = []; invoiceNo++; render(); });
+}
+
+/* ---- LAB 3: control structures + validation, grading system ---- */
+function initGrading() {
+  const subjects = ["Operating Systems", "Computer Networks", "Machine Learning", "JavaScript Lab", "Software Engineering"];
+  document.getElementById("gradeInputs").innerHTML = subjects.map((s, i) => `
+    <div class="form-row" style="grid-template-columns:2fr 1fr;margin-bottom:8px">
+      <input class="g-sub" value="${s}" aria-label="Subject ${i + 1}">
+      <input class="g-mark" type="number" min="0" max="100" placeholder="Marks /100" aria-label="Marks ${i + 1}">
+    </div>`).join("");
+
+  function gradeFor(marks) {
+    if (marks >= 90) return { grade: "O", point: 10 };
+    else if (marks >= 80) return { grade: "A+", point: 9 };
+    else if (marks >= 70) return { grade: "A", point: 8 };
+    else if (marks >= 60) return { grade: "B+", point: 7 };
+    else if (marks >= 50) return { grade: "B", point: 6 };
+    else if (marks >= 45) return { grade: "C", point: 5 };
+    else if (marks >= 40) return { grade: "P", point: 4 };
+    else return { grade: "F", point: 0 };
+  }
+
+  document.getElementById("gradeBtn").addEventListener("click", () => {
+    const names = document.querySelectorAll(".g-sub");
+    const marks = document.querySelectorAll(".g-mark");
+    const rows = [];
+    const errors = [];
+
+    for (let i = 0; i < marks.length; i++) {           // classic for loop
+      const raw = marks[i].value.trim();
+      const m = Number(raw);
+      marks[i].style.borderColor = "";
+      if (raw === "") errors.push(`${names[i].value}: marks missing`);
+      else if (isNaN(m) || m < 0 || m > 100) errors.push(`${names[i].value}: must be between 0 and 100`);
+      else { rows.push({ subject: names[i].value || `Subject ${i + 1}`, marks: m, ...gradeFor(m) }); continue; }
+      marks[i].style.borderColor = "var(--err)";
+    }
+    const out = document.getElementById("gradeOut");
+    if (errors.length) { out.innerHTML = `<b class="err">Please fix:</b><ul style="padding-left:18px">${errors.map(e => `<li>${escapeHTML(e)}</li>`).join("")}</ul>`; return; }
+
+    let total = 0, points = 0;
+    for (const r of rows) { total += r.marks; points += r.point; }   // for...of
+    const pct = total / rows.length;
+    const sgpa = points / rows.length;
+    const failed = rows.some(r => r.grade === "F");
+
+    let remark;
+    switch (true) {                                    // switch statement
+      case failed: remark = "Result: FAIL. Clear the backlog subject(s) to pass."; break;
+      case sgpa >= 9: remark = "Outstanding performance! 🌟"; break;
+      case sgpa >= 7.5: remark = "Distinction 🎉"; break;
+      case sgpa >= 6: remark = "First class 👍"; break;
+      default: remark = "Pass. There's room to improve.";
+    }
+    out.innerHTML = `
+      <div class="table-wrap"><table><tr><th>Subject</th><th>Marks</th><th>Grade</th><th>Points</th></tr>
+      ${rows.map(r => `<tr><td>${escapeHTML(r.subject)}</td><td>${r.marks}</td><td><b class="${r.grade === "F" ? "err" : "ok"}">${r.grade}</b></td><td>${r.point}</td></tr>`).join("")}</table></div>
+      <p style="margin-top:10px">Total: <b>${total}/${rows.length * 100}</b> · Percentage: <b>${pct.toFixed(2)}%</b> · SGPA (equal credits): <b>${sgpa.toFixed(2)}</b></p>
+      <p class="${failed ? "err" : "ok"}"><b>${remark}</b></p>`;
+  });
+}
+
+/* ---- LAB 4: function types, scope, closures, try/catch ---- */
+
+// custom error type
+class ValidationError extends Error {
+  constructor(message) { super(message); this.name = "ValidationError"; }
+}
+
+// closure: the counter variable stays private inside makeCounter
+function makeCounter() {
+  let count = 0;
+  return { next: () => ++count, value: () => count };
+}
+
+// function declaration (hoisted), two-pointer check
+function isPalindrome(text) {
+  let i = 0, j = text.length - 1;
+  while (i < j) {
+    if (text[i] !== text[j]) return false;
+    i++; j--;
+  }
+  return true;
+}
+
+// function expression
+const cleanText = function (str) {
+  return str.toLowerCase().replace(/[^a-z0-9]/g, "");
+};
+
+// arrow function + higher-order function (takes a callback)
+const runCheck = (input, onResult) => {
+  if (typeof input !== "string" || input.trim() === "") throw new ValidationError("Please type a word, phrase or number.");
+  if (input.length > 200) throw new ValidationError("Keep it under 200 characters.");
+  const cleaned = cleanText(input);
+  if (!cleaned) throw new ValidationError("Use at least one letter or digit.");
+  onResult(isPalindrome(cleaned), cleaned);
+};
+
+function initPalindrome() {
+  const counter = makeCounter();
+  const history = [];
+  const out = document.getElementById("palOut");
+  const input = document.getElementById("palInput");
+
+  function check() {
+    const value = input.value;
+    try {
+      runCheck(value, (result, cleaned) => {
+        const reversed = [...cleaned].reverse().join("");
+        history.unshift(`${result ? "✅" : "❌"} ${value}`);
+        if (history.length > 5) history.pop();
+        out.innerHTML = `
+          <p style="font-size:1.1rem" class="${result ? "ok" : "err"}"><b>"${escapeHTML(value)}" ${result ? "IS" : "is NOT"} a palindrome</b></p>
+          <p class="muted mono" style="font-size:.85rem">cleaned: ${cleaned} · reversed: ${reversed}</p>`;
+      });
+    } catch (err) {
+      if (err instanceof ValidationError) out.innerHTML = `<p class="warn"><b>⚠ ${err.name}:</b> ${err.message}</p>`;
+      else { out.innerHTML = `<p class="err">Unexpected error.</p>`; console.error(err); }
+    } finally {
+      const n = counter.next();
+      out.innerHTML += `<p class="muted" style="font-size:.85rem;margin-top:8px">Checks made: ${n} (count kept in a closure)${history.length ? `<br>Recent: ${history.map(escapeHTML).join(" · ")}` : ""}</p>`;
+    }
+  }
+  document.getElementById("palBtn").addEventListener("click", check);
+  input.addEventListener("keydown", e => { if (e.key === "Enter") check(); });
+}
+
+/* ---- LAB 5: array methods, objects, cart with discounts ---- */
+function initCart() {
+  const catalog = [
+    { id: 1, name: "Mechanical Keyboard", price: 2499, emoji: "⌨️" },
+    { id: 2, name: "Wireless Mouse", price: 699, emoji: "🖱️" },
+    { id: 3, name: "USB-C Hub", price: 1299, emoji: "🔌" },
+    { id: 4, name: "Arduino Starter Kit", price: 1499, emoji: "🤖" },
+    { id: 5, name: "Notebook Pack", price: 199, emoji: "📓" },
+    { id: 6, name: "Headphones", price: 1999, emoji: "🎧" }
+  ];
+  const COUPONS = { STUDENT15: 15, SIT10: 10 };
+  let cart = {};                          // { productId: quantity }
+  let coupon = null;
+
+  document.getElementById("products").innerHTML = catalog.map(p => `
+    <div class="product"><div style="font-size:1.4rem">${p.emoji}</div><b>${p.name}</b><div class="muted">${rupee(p.price)}</div>
+    <button class="btn small" data-add="${p.id}" style="margin-top:6px">+ Add</button></div>`).join("");
+
+  function render() {
+    const lines = Object.entries(cart)
+      .map(([id, qty]) => ({ ...catalog.find(p => p.id === Number(id)), qty }))
+      .sort((a, b) => b.price * b.qty - a.price * a.qty);
+
+    document.getElementById("cartLines").innerHTML = lines.length
+      ? lines.map(l => `<div class="cart-line"><span>${l.emoji} ${l.name}</span>
+          <span class="qty"><button data-dec="${l.id}">−</button> ${l.qty} <button data-add="${l.id}">+</button></span>
+          <b>${rupee(l.price * l.qty)}</b></div>`).join("")
+      : `<p class="muted">Your cart is empty. Add something from the list.</p>`;
+
+    const out = document.getElementById("cartOut");
+    if (!lines.length) { out.innerHTML = ""; return; }
+
+    const subtotal = lines.reduce((sum, l) => sum + l.price * l.qty, 0);
+    const itemCount = lines.reduce((sum, l) => sum + l.qty, 0);
+    const discounts = [];
+    if (subtotal >= 5000) discounts.push({ label: "Spend ₹5000+: 10% off", pct: 10 });
+    else if (subtotal >= 2000) discounts.push({ label: "Spend ₹2000+: 5% off", pct: 5 });
+    if (itemCount >= 3) discounts.push({ label: "3 or more items: extra 5% off", pct: 5 });
+    if (coupon) discounts.push({ label: `Coupon ${coupon}: ${COUPONS[coupon]}% off`, pct: COUPONS[coupon] });
+
+    const totalPct = Math.min(discounts.reduce((s, d) => s + d.pct, 0), 30);   // capped at 30%
+    const saved = subtotal * totalPct / 100;
+    const delivery = subtotal - saved >= 999 ? 0 : 49;
+    out.innerHTML = `
+      <p>Items: <b>${itemCount}</b> · Subtotal: <b>${rupee(subtotal)}</b></p>
+      ${discounts.length ? `<ul style="padding-left:18px" class="ok">${discounts.map(d => `<li>${d.label}</li>`).join("")}</ul>` : `<p class="muted">Spend ₹2000 or more to unlock a discount.</p>`}
+      ${totalPct === 30 ? `<p class="muted" style="font-size:.85rem">Total discount is capped at 30%.</p>` : ""}
+      <p>Discount: <b>−${rupee(saved)}</b> · Delivery: <b>${delivery ? rupee(delivery) : "FREE"}</b></p>
+      <p style="font-size:1.15rem">Payable: <b class="grad">${rupee(subtotal - saved + delivery)}</b></p>`;
+  }
+
+  document.getElementById("tab-cart").addEventListener("click", e => {
+    const add = e.target.closest("[data-add]"), dec = e.target.closest("[data-dec]");
+    if (add) { const id = add.dataset.add; cart[id] = (cart[id] || 0) + 1; }
+    if (dec) { const id = dec.dataset.dec; cart[id]--; if (cart[id] <= 0) delete cart[id]; }
+    if (add || dec) render();
+  });
+  document.getElementById("applyCoupon").addEventListener("click", () => {
+    const code = document.getElementById("coupon").value.trim().toUpperCase();
+    if (Object.keys(COUPONS).includes(code)) { coupon = code; showToast(`Coupon ${code} applied 🎉`); }
+    else { coupon = null; showToast("Invalid coupon. Try STUDENT15"); }
+    render();
+  });
+  render();
+}
+
+/* ---- LAB 6: string functions + regex ---- */
+const EMAIL_RE = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+function initTextAnalyzer() {
+  const area = document.getElementById("textIn");
+  const out = document.getElementById("textOut");
+  const STOP = new Set("a an the and or to of in on at for is are was i i'm me my it this that with from by be too".split(" "));
+
+  function analyse() {
+    const text = area.value;
+    const words = text.match(/\b[\w'-]+\b/g) || [];
+    const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+    const freq = {};
+    words.map(w => w.toLowerCase()).filter(w => !STOP.has(w) && w.length > 2 && isNaN(w)).forEach(w => freq[w] = (freq[w] || 0) + 1);
+    const top = Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+    // data extraction with regex
+    const emailsFound = text.match(/[\w.+-]+@[\w-]+(\.[\w-]+)*/g) || [];
+    const valid = emailsFound.filter(e => EMAIL_RE.test(e));
+    const invalid = emailsFound.filter(e => !EMAIL_RE.test(e));
+    const phones = text.match(/(\+91[\s-]?)?[6-9]\d{9}\b/g) || [];
+    const urls = text.match(/https?:\/\/[^\s,]+[^\s,.]/g) || [];
+    const tags = text.match(/#\w+/g) || [];
+    const years = text.match(/\b(19|20)\d{2}\b/g) || [];
+    const vowels = (text.match(/[aeiou]/gi) || []).length;
+    const list = arr => arr.length ? arr.map(x => `<span class="pill">${escapeHTML(x)}</span>`).join("") : `<span class="muted">none</span>`;
+
+    out.innerHTML = `
+      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:12px">
+        ${[["Characters", text.length], ["No spaces", text.replace(/\s/g, "").length], ["Words", words.length], ["Sentences", sentences.length], ["Vowels", vowels], ["Read time", Math.max(1, Math.ceil(words.length / 200)) + " min"]]
+          .map(([k, v]) => `<div><div class="muted" style="font-size:.78rem">${k}</div><b style="font-size:1.2rem">${v}</b></div>`).join("")}
+      </div>
+      <p><b>Top words:</b> ${top.length ? top.map(([w, c]) => `<span class="pill accent">${escapeHTML(w)} ×${c}</span>`).join("") : "–"}</p>
+      <p><b>Valid emails:</b> ${list(valid)}</p>
+      <p><b>Invalid emails:</b> ${list(invalid)}</p>
+      <p><b>Phone numbers:</b> ${list(phones)}</p>
+      <p><b>URLs:</b> ${list(urls)}</p>
+      <p><b>Hashtags:</b> ${list(tags)} &nbsp; <b>Years:</b> ${list(years)}</p>`;
+  }
+
+  const transforms = {
+    title: s => s.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()),
+    upper: s => s.toUpperCase(),
+    reverse: s => s.split(/\s+/).reverse().join(" "),
+    slug: s => s.toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/[\s_]+/g, "-").replace(/-+/g, "-")
+  };
+  document.getElementById("analyzeBtn").addEventListener("click", analyse);
+  document.querySelectorAll("[data-tx]").forEach(btn => btn.addEventListener("click", () => {
+    area.value = transforms[btn.dataset.tx](area.value);
+    analyse();
+  }));
+  analyse();
+}
+
+/* ---- LAB 7: DOM traversal & updates, to-do list ---- */
+function initTodo() {
+  const list = document.getElementById("todoList");
+  const form = document.getElementById("todoForm");
+  const input = document.getElementById("todoInput");
+  let todos = Local.get("pf_todos", [
+    { id: 1, text: "Finish the DERMA-AI viva presentation", done: false },
+    { id: 2, text: "Learn ES6 modules properly", done: true },
+    { id: 3, text: "Apply for summer internships", done: false }
+  ]);
+
+  const save = () => { Local.set("pf_todos", todos); updateCount(); };
+
+  function updateCount() {
+    const total = list.children.length;                   // traversal: children
+    const done = list.querySelectorAll("li.done").length;
+    document.getElementById("todoCount").textContent = total ? `(${done}/${total} done)` : "(nothing yet)";
+  }
+
+  function createItem({ id, text, done }) {
+    const li = document.createElement("li");
+    li.dataset.id = id;
+    if (done) li.classList.add("done");
+    const box = document.createElement("input");
+    box.type = "checkbox"; box.checked = done;
+    const span = document.createElement("span");
+    span.className = "todo-text"; span.textContent = text;
+    const edit = document.createElement("button");
+    edit.className = "btn small"; edit.dataset.action = "edit"; edit.textContent = "Edit";
+    const del = document.createElement("button");
+    del.className = "btn small"; del.dataset.action = "delete"; del.textContent = "Delete";
+    li.append(box, span, edit, del);
+    return li;
+  }
+
+  function commitEdit(li) {
+    const field = li.querySelector("input[type=text]");
+    const text = field.value.trim();
+    if (!text) return showToast("A goal can't be empty");
+    const span = document.createElement("span");
+    span.className = "todo-text"; span.textContent = text;
+    field.replaceWith(span);
+    span.nextElementSibling.textContent = "Edit";          // traversal: nextElementSibling
+    todos.find(t => t.id === Number(li.dataset.id)).text = text;
+    save();
+  }
+
+  list.addEventListener("click", e => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+    const li = btn.closest("li");                         // traversal: closest
+    if (btn.dataset.action === "delete") {
+      li.classList.add("removing");
+      setTimeout(() => {
+        li.remove();
+        todos = todos.filter(t => t.id !== Number(li.dataset.id));
+        save();
+      }, 250);
+    } else if (btn.dataset.action === "edit") {
+      const span = li.querySelector(".todo-text");
+      if (!span) return commitEdit(li);                   // already editing, so save
+      const field = document.createElement("input");
+      field.type = "text"; field.value = span.textContent; field.maxLength = 80;
+      span.replaceWith(field);
+      btn.textContent = "Save";
+      field.focus();
+      field.addEventListener("keydown", ev => { if (ev.key === "Enter") commitEdit(li); });
+    }
+  });
+
+  list.addEventListener("change", e => {
+    if (e.target.type !== "checkbox") return;
+    const li = e.target.parentElement;                    // traversal: parentElement
+    li.classList.toggle("done", e.target.checked);
+    todos.find(t => t.id === Number(li.dataset.id)).done = e.target.checked;
+    save();
+  });
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    const text = input.value.trim();
+    if (!text) return showToast("Type a goal first");
+    const todo = { id: Date.now(), text, done: false };
+    todos.push(todo);
+    list.prepend(createItem(todo));
+    input.value = "";
+    save();
+  });
+
+  todos.slice().reverse().forEach(t => list.prepend(createItem(t)));
+  updateCount();
+}
+
+/* ---- LAB 8: contact form with live validation ---- */
+function initContactForm() {
+  const form = document.getElementById("contactForm");
+  const RULES = {
+    name: { test: v => /^[A-Za-z][A-Za-z .'-]{2,49}$/.test(v.trim()), msg: "At least 3 letters, no digits or symbols.", ok: "Looks good" },
+    email: { test: v => EMAIL_RE.test(v.trim()), msg: "Enter a valid email, e.g. name@domain.com", ok: "Valid email ✓" },
+    phone: { test: v => v.trim() === "" || /^(\+91)?[6-9]\d{9}$/.test(v.replace(/[\s-]/g, "")), msg: "10-digit Indian mobile number starting with 6 to 9.", ok: "" },
+    purpose: { test: v => v !== "", msg: "Please choose a purpose.", ok: "" },
+    message: { test: v => v.trim().length >= 20, msg: "Write at least 20 characters.", ok: "Great 👍" }
+  };
+  const touched = new Set();
+
+  function validate(field) {
+    const rule = RULES[field.name];
+    const wrap = field.closest(".field");
+    const hint = wrap.querySelector("small");
+    const valid = rule.test(field.value);
+    wrap.classList.toggle("valid", valid && field.value.trim() !== "");
+    wrap.classList.toggle("invalid", !valid);
+    hint.textContent = valid ? rule.ok : rule.msg;
+    hint.className = valid ? "ok" : "err";
+    return valid;
+  }
+
+  // restore an unsent draft from sessionStorage
+  const draft = Session.get("pf_draft", {});
+  Object.entries(draft).forEach(([k, v]) => { if (form.elements[k]) form.elements[k].value = v; });
+  const msg = form.elements.message;
+  const updateCount = () => document.getElementById("msgCount").textContent = `${msg.value.length} / 500`;
+  updateCount();
+
+  form.addEventListener("input", e => {
+    const f = e.target;
+    if (!RULES[f.name]) return;
+    if (f.name === "message") updateCount();
+    if (f.name === "phone") f.value = f.value.replace(/[^\d+\s-]/g, "");  // block letters as you type
+    if (touched.has(f.name) || f.value.length > 2) { touched.add(f.name); validate(f); }
+    const data = Object.fromEntries(new FormData(form));
+    Session.set("pf_draft", data);
+  });
+  form.addEventListener("focusout", e => { if (RULES[e.target.name]) { touched.add(e.target.name); validate(e.target); } });
+  form.addEventListener("change", e => { if (e.target.tagName === "SELECT") validate(e.target); });
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    const fields = Object.keys(RULES).map(n => form.elements[n]);
+    const results = fields.map(validate);                 // validate every field (no short-circuit)
+    if (results.includes(false)) {
+      fields[results.indexOf(false)].focus();
+      showToast("Please fix the highlighted fields");
+      return;
+    }
+    const { name, email, phone, purpose, message } = Object.fromEntries(new FormData(form));
+    const body = `${message}\n\n— ${name}\n${email}${phone ? "\n" + phone : ""}`;
+    window.location.href = `mailto:${PROFILE.contact.email}?subject=${encodeURIComponent(`[Portfolio] ${purpose} from ${name}`)}&body=${encodeURIComponent(body)}`;
+    showToast(`Thanks ${name.split(" ")[0]}! Your email app should open now.`);
+    Session.remove("pf_draft");
+    form.reset();
+    form.querySelectorAll(".field").forEach(f => { f.classList.remove("valid", "invalid"); f.querySelector("small").textContent = ""; });
+    touched.clear();
+    updateCount();
+  });
+}
+
+
+/* =====================================================================
+   5. START-UP
+   ===================================================================== */
+
+// LAB 1: console methods
+function consoleReport() {
+  console.log("%c" + PROFILE.name + " · Portfolio", "font-size:20px;font-weight:800;color:#d4507a");
+  console.info("Hi! This whole page is generated by JavaScript. Feel free to look around.");
+  console.group("Profile summary");
+  console.log("Projects:", PROJECTS.map(p => p.title));
+  console.table(SKILLS.map(({ title, items }) => ({ group: title, skills: items.join(", ") })));
+  console.groupEnd();
+
+  // flag any details that still need to be filled in
+  const missing = [];
+  if (!PROFILE.contact.phone) missing.push("PROFILE.contact.phone");
+  if (!PROFILE.contact.linkedin) missing.push("PROFILE.contact.linkedin");
+  GALLERY.filter(g => g.src.includes("gallery-")).forEach(g => missing.push(`photo: ${g.src} (${g.caption})`));
+  if (missing.length) {
+    console.groupCollapsed(`⚠ ${missing.length} details still to fill in`);
+    missing.forEach(m => console.warn(m));
+    console.groupEnd();
+  }
+}
+
+console.time("render");
+document.getElementById("app").innerHTML = [renderNav(), renderLab(), renderFooter(), renderOverlays()].join("");
+console.timeEnd("render");
+document.getElementById("year").textContent = new Date().getFullYear();
+
+// LAB 12: jQuery document-ready
+$(function () {
+  const steps = [
+    ["Preferences", () => Prefs.init()],
+    ["Scroll effects", initScrollEffects],
+    ["Tabs", initTabs],
+    ["Billing", initBilling],
+    ["Grading", initGrading],
+    ["Palindrome", initPalindrome],
+    ["Cart", initCart],
+    ["Text analyser", initTextAnalyzer],
+    ["To-do", initTodo]
+  ];
+  // one broken feature should not stop the rest of the page
+  steps.forEach(([label, fn]) => {
+    try { fn(); }
+    catch (err) { console.error(`${label} failed to start:`, err); }
+  });
+  consoleReport();
+
+  // if the ES6 module below can't load (very old browser), start the countdown without it
+  const clock = document.getElementById("liveClock");
+  setInterval(() => clock.textContent = "🕒 " + new Date().toLocaleTimeString(), 1000);
+});
+</script>
+
+</body>
+</html>
