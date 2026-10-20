@@ -321,7 +321,7 @@ const PROFILE = {
   university: "Symbiosis Institute of Technology, Nagpur",
   degree: "B.Tech, Computer Science (AI & ML specialisation)",
   currentSem: 5,
-  cgpa: 7.5,
+  cgpa: 8.00,
   about: [
     "I'm a third-year Computer Science (AI & ML) student at Symbiosis Institute of Technology, Nagpur, and I'm also doing a Minor in AI from IIT Ropar. I learn best by building things: a skin-lesion triage model that runs entirely inside a web browser, a CO₂-forecasting system that turned into a published patent application, and a case-handoff platform put together in a 24-hour hackathon.",
     "I like problems where the model is only half the work. It has to be fast enough for an ordinary laptop, honest about what it can't do, and packaged in something a real person can use. That's why my projects usually end up as full-stack apps rather than notebooks."
@@ -341,7 +341,7 @@ const PROFILE = {
 const HIGHLIGHTS = ["Patent co-inventor", "3 research papers", "NASA Space Apps 2025", "Minor in AI, IIT Ropar", "3 live apps"];
 
 const EDUCATION = [
-  { year: "2024 – 2028", title: PROFILE.degree, place: PROFILE.university, detail: `Currently in Semester ${PROFILE.currentSem}. Coursework: machine learning, deep learning, neural networks, data structures & algorithms, DBMS, cloud computing, operating systems.`, score: PROFILE.cgpa, scoreLabel: "CGPA" },
+  { year: "2024 – 2028", title: PROFILE.degree, place: PROFILE.university, detail: `Currently in Semester ${PROFILE.currentSem}. Coursework: machine learning, deep learning, neural networks, data structures & algorithms, DBMS, cloud computing, operating systems.`, score: PROFILE.cgpa.toFixed(2), scoreLabel: "CGPA" },
   { year: "2025 – 2026", title: "Minor in Artificial Intelligence", place: "Indian Institute of Technology (IIT) Ropar", detail: "Advanced AI, research methodology and real-world applications. My book-recommendation engine was built for this programme.", score: null, scoreLabel: null }
 ];
 
@@ -703,7 +703,7 @@ function renderEducation() {
       <div class="card reveal">
         <h3>Academic performance</h3>
         <div style="display:flex;align-items:baseline;gap:14px;margin:10px 0 4px">
-          <span class="counter-cgpa" style="font-family:var(--serif);font-size:4.6rem;line-height:1;color:var(--accent)">${PROFILE.cgpa.toFixed(1)}</span>
+          <span class="counter-cgpa" style="font-family:var(--serif);font-size:4.6rem;line-height:1;color:var(--accent)">${PROFILE.cgpa.toFixed(2)}</span>
           <span class="muted">CGPA out of 10<br>B.Tech, up to Semester 4</span>
         </div>
         <div class="track" style="margin:14px 0 22px"><div class="fill" data-w="${PROFILE.cgpa * 10}"></div></div>
@@ -1441,7 +1441,7 @@ function downloadResume() {
   h1{margin:0}h2{font-size:15px;text-transform:uppercase;letter-spacing:.08em;color:#5b3fd9;border-bottom:2px solid #eee;padding-bottom:4px;margin-top:22px}
   .sub{color:#555}ul{margin:4px 0;padding-left:20px}.row{display:flex;justify-content:space-between}</style></head><body>
   <h1>${name}</h1>
-  <div class="sub">${degree}, ${university} · CGPA ${PROFILE.cgpa} · ${location}</div>
+  <div class="sub">${degree}, ${university} · CGPA ${PROFILE.cgpa.toFixed(2)} · ${location}</div>
   <div class="sub">${contact.email}${contact.phone ? " · " + contact.phone : ""} · ${githubURL}${contact.linkedin ? " · " + contact.linkedin : ""}</div>
   ${section("Profile", `<p>${PROFILE.about[0]}</p>`)}
   ${section("Education", EDUCATION.filter(e => !e.todo || e.place).map(e => `<div class="row"><b>${e.title}</b><span>${e.year}</span></div><div class="sub">${e.place || ""}${e.score ? ` · ${e.scoreLabel}: ${e.score}` : ""}</div>`).join(""))}
