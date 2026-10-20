@@ -96,7 +96,7 @@ label{font-size:.82rem;font-weight:500;color:var(--muted);display:block;margin-b
 .lead{font-size:1.05rem;color:var(--muted);max-width:500px;margin:14px 0 28px}
 .btn-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
 .hero-art{position:relative;align-self:center;min-height:500px}
-.polaroid{position:absolute;top:10px;right:6%;width:min(300px,72vw);background:#fff;padding:14px 14px 50px;box-shadow:0 18px 40px rgba(90,30,50,.16);transform:rotate(3deg);transition:transform .4s}
+.polaroid{position:absolute;top:30px;right:12%;width:min(300px,72vw);background:#fff;padding:14px 14px 50px;box-shadow:0 18px 40px rgba(90,30,50,.16);transform:rotate(3deg);transition:transform .4s}
 .polaroid:hover{transform:rotate(0) scale(1.02)}
 .polaroid img{width:100%;aspect-ratio:4/5;object-fit:cover;background:#f3dfe4}
 .polaroid figcaption{position:absolute;left:0;right:0;bottom:12px;text-align:center;font-family:var(--hand);font-size:1.5rem;color:#5a3442}
@@ -600,9 +600,8 @@ function showToast(msg) {
 
 // Called by the inline onclick in the hero
 function sayHello(e) {
-  const name = Local.get("pf_visitor", "");
   if (e) petalBurst(e.clientX, e.clientY);
-  showToast(name ? `Hi ${name}! Thanks for stopping by 😊` : "Hi! Tell me your name in the box below 👇");
+  showToast("Hi! Thanks for stopping by 😊");
   console.log("sayHello() was called from an inline onclick attribute");
 }
 
@@ -657,14 +656,6 @@ function renderHero() {
           <img src="${photo}" alt="${name}" data-label="${initials}" data-kind="avatar" onerror="imgFallback(this)">
           <figcaption>${city.toLowerCase()}, sem ${currentSem} ♡</figcaption>
         </figure>
-        <div class="visitor">
-          <p class="hand">psst, what's your name?</p>
-          <div class="row">
-            <input id="visitorName" placeholder="type it here" maxlength="30">
-            <button class="btn small primary" id="saveVisitor">save</button>
-          </div>
-          <div class="visitor-info" id="visitorInfo"></div>
-        </div>
       </div>
       <nav class="hero-index">${index}</nav>
     </div>
@@ -871,7 +862,7 @@ function initFancyUI() {
   });
 
   /* 5. parallax on the hero polaroid and sticky note */
-  const polaroid = document.querySelector(".polaroid"), note = document.querySelector(".visitor");
+  const polaroid = document.querySelector(".polaroid");
   let ticking = false;
   addEventListener("scroll", () => {
     if (ticking || !motionOK() || innerWidth < 860) return;
@@ -879,7 +870,6 @@ function initFancyUI() {
     requestAnimationFrame(() => {
       const y = Math.min(scrollY, innerHeight);
       polaroid.style.translate = `0 ${y * -0.12}px`;
-      note.style.translate = `0 ${y * -0.22}px`;
       ticking = false;
     });
   }, { passive: true });
@@ -1220,38 +1210,21 @@ const Prefs = {
 
 /* ---- LAB 1: visitor info and welcome message ---- */
 function initVisitor() {
-  const nameInput = document.getElementById("visitorName");
   const welcome = document.getElementById("welcomeMsg");
+  const hour = new Date().getHours();
+  let part;                                          // control flow: if / else if / else
+  if (hour < 12) part = "Good morning";
+  else if (hour < 17) part = "Good afternoon";
+  else part = "Good evening";
+  welcome.textContent = `${part}! Welcome to my portfolio.`;
 
-  function greet() {
-    const name = Local.get("pf_visitor", "");
-    const hour = new Date().getHours();
-    let part;                                          // control flow: if / else if / else
-    if (hour < 12) part = "Good morning";
-    else if (hour < 17) part = "Good afternoon";
-    else part = "Good evening";
-    welcome.textContent = name ? `${part}, ${name}! Welcome back.` : `${part}! Welcome to my portfolio.`;
-    nameInput.value = name;
-  }
-  function save() {
-    const name = nameInput.value.trim();
-    if (name && !/^[A-Za-z][A-Za-z .'-]{0,29}$/.test(name)) { showToast("Please use letters only"); return; }
-    Local.set("pf_visitor", name);
-    greet();
-    showToast(name ? `Nice to meet you, ${name}!` : "Name cleared");
-    console.log(`Visitor name saved: "${name}"`);
-  }
-  document.getElementById("saveVisitor").addEventListener("click", save);
-  nameInput.addEventListener("keydown", e => { if (e.key === "Enter") save(); });
-  greet();
-
+  // LAB 1: basic info about the visitor, logged to the console
   const info = {
-    "🕒 Your time": new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-    "🌐 Language": navigator.language,
-    "📍 Time zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
-    "🖥 Screen": `${screen.width}×${screen.height}`
+    "Your time": new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    "Language": navigator.language,
+    "Time zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+    "Screen": `${screen.width}×${screen.height}`
   };
-  document.getElementById("visitorInfo").innerHTML = Object.entries(info).map(([k, v]) => `<span>${k}: <b>${escapeHTML(v)}</b></span>`).join("");
   console.table(info);
 }
 
